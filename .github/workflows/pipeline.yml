@@ -52,7 +52,7 @@ jobs:
         run: black --check .
 
       - name: Security scan
-        run: safety scan --full-report --bare
+        run: safety check
 
       - name: Check outdated dependencies
         run: pip list --outdated
