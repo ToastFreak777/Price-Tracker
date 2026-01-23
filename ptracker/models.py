@@ -8,11 +8,17 @@ class Users(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
 
+    def __repr__(self):
+        return f"User('{self.username}', '{self.email}')"
+
 
 class Items(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     vendor = db.Column(db.String(100), nullable=False)
     url = db.Column(db.String(200), nullable=False)
+
+    def __repr__(self):
+        return f"Item('{self.vendor}', '{self.url}')"
 
 
 class User_items(db.Model):
@@ -25,6 +31,9 @@ class User_items(db.Model):
         db.UniqueConstraint("user_id", "item_id", name="unique_user_item"),
     )
 
+    def __repr__(self):
+        return f"UserItem(User ID: '{self.user_id}', Item ID: '{self.item_id}', Target Price: '{self.target_price}')"
+
 
 class Price_history(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,3 +43,6 @@ class Price_history(db.Model):
 
     # Possible optimization for historical queires
     # db.index("idx_price_history_item_time", item_id, timestamp)
+
+    def __repr__(self):
+        return f"PriceHistory(Item ID: '{self.item_id}', Price: '{self.price}', Timestamp: '{self.timestamp}')"
