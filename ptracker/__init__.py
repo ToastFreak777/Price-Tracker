@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
 from config import Config
 
 db = SQLAlchemy()
@@ -10,8 +9,13 @@ db = SQLAlchemy()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+
     db.init_app(app)
     migrate = Migrate(app, db)
+
+    from ptracker.datasources import init_datasources
+
+    init_datasources(app)
 
     from ptracker.main.routes import main
 
