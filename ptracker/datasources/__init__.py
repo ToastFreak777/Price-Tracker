@@ -8,10 +8,12 @@ class DataSourceFactory:
 
     @classmethod
     def register(cls, vendor: str, source: DataSource):
+        """Register or add a data source"""
         cls._sources[vendor] = source
 
     @classmethod
     def get(cls, vendor: str) -> DataSource:
+        """Get data source by vendor name"""
         if vendor not in cls._sources:
             raise ValueError(f"Unknown vendor: {vendor}")
         return cls._sources[vendor]
