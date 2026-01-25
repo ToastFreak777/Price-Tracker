@@ -23,8 +23,8 @@ class Item(db.Model):
 
     price_history = db.relationship("PriceHistory", backref="item", lazy=True)
 
-    __table_args__ = UniqueConstraint(
-        "vendor", "external_id", name="unique_vendor_external_id"
+    __table_args__ = (
+        UniqueConstraint("vendor", "external_id", name="unique_vendor_external_id"),
     )
 
     def __repr__(self):
@@ -33,8 +33,8 @@ class Item(db.Model):
 
 class UserItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    item_id = db.Column(db.Integer, db.ForeignKey("items.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
     target_price = db.Column(db.Float, nullable=False)
 
     __table_args__ = (
@@ -47,7 +47,7 @@ class UserItem(db.Model):
 
 class PriceHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    item_id = db.Column(db.Integer, db.ForeignKey("items.id"), nullable=False)
+    item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
     price = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
