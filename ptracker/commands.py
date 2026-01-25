@@ -1,7 +1,7 @@
 import click
 from flask.cli import with_appcontext
 from ptracker import db
-from ptracker.models import Users, Items
+from ptracker.models import User
 from werkzeug.security import generate_password_hash
 
 test_password = "abc123"
@@ -11,12 +11,12 @@ test_password = "abc123"
 @with_appcontext
 def seed_db():
     """Seed the database with initial data."""
-    user1 = Users(
+    user1 = User(
         username="Spongebob",
         email="spongebob@bikinibottom.com",
         password_hash=generate_password_hash(test_password),
     )
-    user2 = Users(
+    user2 = User(
         username="Patrick",
         email="patrick@rock.com",
         password_hash=generate_password_hash(test_password),
