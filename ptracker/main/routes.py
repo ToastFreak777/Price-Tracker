@@ -49,26 +49,31 @@ def get_item(item_id):
     try:
         service = PriceTrackerService()
         result = service.get_item(item_id)
-        history = result["price_history"]
+
+        snapshot = result["snapshot"]
+        if snapshot.timestamp:
+            snapshot.timestamp = snapshot.timestamp.isoformat()
 
         serialized_history = [
             {
-                "item_id": history.item_id,
-                "price": history.price,
-                "timestamp": history.timestamp.isoformat(),
+                "price": h.price,
+                "timestamp": h.timestamp.isoformat(),
             }
-            for history in history
+            for h in result["price_history"]
         ]
 
         return (
             jsonify(
                 {
                     "success": True,
-                    "item": result["snapshot"],
-                    "pricehistory": serialized_history,
+                    "data": {
+                        "id": item_id,
+                        "snapshot": result["snapshot"],
+                        "price_history": serialized_history,
+                    },
                 }
             ),
-            201,
+            200,
         )
 
     except Exception as e:
