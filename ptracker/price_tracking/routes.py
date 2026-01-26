@@ -1,17 +1,10 @@
 from flask import Blueprint, request, jsonify
-from ptracker.services.price_tracker import PriceTrackerService
-from ptracker.api.rapid import search
+from .service import PriceTrackerService
 
-main = Blueprint("main", __name__)
-
-
-@main.route("/")
-@main.route("/home")
-def home():
-    return "<h1>Price Tracker Home page</h1>"
+price_bp = Blueprint("price", __name__, url_prefix="/items")
 
 
-@main.route("/items", methods=["GET"])
+@price_bp.route("", methods=["GET"])
 def get_items():
     """Get all items user is tracking"""
 
@@ -39,7 +32,7 @@ def get_items():
         return jsonify({"success": False, "error": str(e)}), 400
 
 
-@main.route("/items", methods=["POST"])
+@price_bp.route("", methods=["POST"])
 def add_item():
     """Add a new item to track"""
     data = request.get_json()
@@ -66,7 +59,7 @@ def add_item():
         return jsonify({"success": False, "error": str(e)}), 400
 
 
-@main.route("/items/<int:item_id>", methods=["GET"])
+@price_bp.route("/<int:item_id>", methods=["GET"])
 def get_item(item_id):
     try:
         service = PriceTrackerService()
@@ -102,7 +95,7 @@ def get_item(item_id):
         return jsonify({"success": False, "error": str(e)}), 400
 
 
-@main.route("/items/<int:item_id>", methods=["DELETE"])
+@price_bp.route("/<int:item_id>", methods=["DELETE"])
 def untrack_item(item_id):
 
     user_id = 1  # I'll add this later when auth is implemented
@@ -119,17 +112,3 @@ def untrack_item(item_id):
 # @main.route("/items/<int:item_id>/history", methods=["GET"])
 # def get_price_history(item_id):
 #     return f"<h1>Price history for item {item_id}</h1>"
-
-
-@main.route("/test/products")
-def products():
-    products = search("Razor Deathadder V2 Pro")
-
-    for product in products[:5]:
-        print(product.get("title"))
-        print(product.get("price_cents"))
-        print(product.get("availability"))
-        print(product.get("url"))
-        print("-----")
-
-    return "<h1>Products page</h1>"

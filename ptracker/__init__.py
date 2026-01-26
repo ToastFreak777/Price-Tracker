@@ -17,10 +17,14 @@ def create_app(config_class=Config):
 
     init_datasources(app)
 
-    from ptracker.main.routes import main
+    # Blueprints
+    from ptracker.price_tracking.routes import price_bp
+    from ptracker.auth.routes import auth_bp
 
-    app.register_blueprint(main)
+    app.register_blueprint(price_bp)
+    app.register_blueprint(auth_bp)
 
+    # CLI Commands
     from ptracker.commands import seed_db, reset_db
 
     app.cli.add_command(seed_db)
