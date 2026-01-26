@@ -81,10 +81,11 @@ def delete_item(item_id):
     return jsonify({"message": f"Item {item_id} deleted"}), 200
 
 
-@main.route("/items/<int:item_id>/history", methods=["GET"])
-def get_price_history(item_id):
-    # TODO: Return all price points
-    return f"<h1>Price history for item {item_id}</h1>"
+# Redundant with get_item for now, may be useful if I add query parameters later
+# @main.route("/items/<int:item_id>/history", methods=["GET"])
+# def get_price_history(item_id):
+#     # TODO: Return all price points
+#     return f"<h1>Price history for item {item_id}</h1>"
 
 
 @main.route("/test/products")
