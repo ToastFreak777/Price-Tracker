@@ -13,25 +13,22 @@ def get_items():
     user_id = current_user.id
     service = PriceTrackerService()
 
-    try:
-        results = service.get_items(user_id)
-        serialized_items = [
-            {
-                "user_item_id": ui.id,
-                "target_price": ui.target_price,
-                "item": {
-                    "id": ui.item.id,
-                    "vendor": ui.item.vendor,
-                    "external_id": ui.item.external_id,
-                    "url": ui.item.url,
-                },
-            }
-            for ui in results
-        ]
+    results = service.get_items(user_id)
+    serialized_items = [
+        {
+            "user_item_id": ui.id,
+            "target_price": ui.target_price,
+            "item": {
+                "id": ui.item.id,
+                "vendor": ui.item.vendor,
+                "external_id": ui.item.external_id,
+                "url": ui.item.url,
+            },
+        }
+        for ui in results
+    ]
 
-        return jsonify({"success": True, "data": serialized_items}), 200
-    except ValueError as e:
-        return jsonify({"success": False, "error": str(e)}), 400
+    return jsonify({"success": True, "data": serialized_items}), 200
 
 
 @price_bp.route("", methods=["POST"])
@@ -43,60 +40,52 @@ def add_item():
     target_price = data.get("target_price")
     user_id = current_user.id
 
-    try:
-        service = PriceTrackerService()
-        item = service.add_item(url, user_id, target_price)
-        return (
-            jsonify(
-                {
-                    "success": True,
-                    "message": "Item added to tracking",
-                    "item_id": item.id,
-                    "vendor": item.vendor,
-                }
-            ),
-            201,
-        )
-
-    except ValueError as e:
-        return jsonify({"success": False, "error": str(e)}), 400
+    service = PriceTrackerService()
+    item = service.add_item(url, user_id, target_price)
+    return (
+        jsonify(
+            {
+                "success": True,
+                "message": "Item added to tracking",
+                "item_id": item.id,
+                "vendor": item.vendor,
+            }
+        ),
+        201,
+    )
 
 
 @price_bp.route("/<int:item_id>", methods=["GET"])
 @login_required
 def get_item(item_id):
-    try:
-        service = PriceTrackerService()
-        result = service.get_item(item_id)
+    service = PriceTrackerService()
+    result = service.get_item(item_id)
 
-        snapshot = result["snapshot"]
-        if snapshot.timestamp:
-            snapshot.timestamp = snapshot.timestamp.isoformat()
+    snapshot = result["snapshot"]
+    if snapshot.timestamp:
+        snapshot.timestamp = snapshot.timestamp.isoformat()
 
-        serialized_history = [
+    serialized_history = [
+        {
+            "price": h.price,
+            "timestamp": h.timestamp.isoformat(),
+        }
+        for h in result["price_history"]
+    ]
+
+    return (
+        jsonify(
             {
-                "price": h.price,
-                "timestamp": h.timestamp.isoformat(),
+                "success": True,
+                "data": {
+                    "id": item_id,
+                    "snapshot": result["snapshot"],
+                    "price_history": serialized_history,
+                },
             }
-            for h in result["price_history"]
-        ]
-
-        return (
-            jsonify(
-                {
-                    "success": True,
-                    "data": {
-                        "id": item_id,
-                        "snapshot": result["snapshot"],
-                        "price_history": serialized_history,
-                    },
-                }
-            ),
-            200,
-        )
-
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 400
+        ),
+        200,
+    )
 
 
 @price_bp.route("/<int:item_id>", methods=["DELETE"])
@@ -105,12 +94,8 @@ def untrack_item(item_id):
 
     user_id = current_user.id
     service = PriceTrackerService()
-
-    try:
-        service.remove_item(user_id, item_id)
-        return jsonify({"message": f"Item {item_id} untracked"}), 200
-    except ValueError as e:
-        return jsonify({"success": False, "error": str(e)}), 400
+    service.remove_item(user_id, item_id)
+    return jsonify({"message": f"Item {item_id} untracked"}), 200
 
 
 # Redundant with get_item for now, may be useful if I add query parameters later

@@ -24,6 +24,7 @@ def create_app(config_class=Config):
     @login_manager.user_loader
     def load_user(user_id: str):
         from ptracker.models import User
+
         return User.query.get(int(user_id))
 
     # Blueprints
@@ -32,6 +33,11 @@ def create_app(config_class=Config):
 
     app.register_blueprint(price_bp)
     app.register_blueprint(auth_bp)
+
+    # Error handling
+    from ptracker.errors import register_error_handlers
+
+    register_error_handlers(app)
 
     # CLI Commands
     from ptracker.commands import seed_db, reset_db
