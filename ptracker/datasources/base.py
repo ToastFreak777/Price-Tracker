@@ -53,6 +53,7 @@ class DataSource(ABC):
     def validate_url(self, url: str) -> bool:
         pass
 
+    @abstractmethod
     def extract_product_id(self, url: str) -> str:
         """
         Extract product identifer from URL
@@ -76,6 +77,9 @@ class DataSource(ABC):
 
         product_id = self.extract_product_id(url)
         return self.fetch_product(product_id)
+
+
+# TODO implement the custom error messages
 
 
 class DataSourceError(Exception):

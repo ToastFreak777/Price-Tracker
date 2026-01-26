@@ -1,3 +1,4 @@
+import re
 import random
 from .base import DataSource, ProductSnapshot
 
@@ -9,7 +10,20 @@ class MockDataSource(DataSource):
         return "mock"
 
     def validate_url(self, url: str) -> bool:
+        """Mock URL: https://mock.com/items/5090"""
         return url.startswith("https://mock.com/")
+
+    def extract_product_id(self, url: str) -> str:
+        match = re.search(r"/items/(\w+)", url)
+        if match:
+            return match.group(1)
+
+        # Fallback if a match is not found
+        parts = url.rstrip("/").split("/")
+        if parts:
+            return parts[-1]
+
+        raise ValueError(f"Invalid mock URL format: {url}")
 
     def fetch_product(self, identifier: str) -> ProductSnapshot:
         base_price = 99.99
