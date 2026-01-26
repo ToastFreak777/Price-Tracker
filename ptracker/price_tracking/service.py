@@ -5,7 +5,7 @@ from ptracker import db
 
 class PriceTrackerService:
 
-    def add_item(self, url: str, user_id: int, target_price: float):
+    def add_item(self, url: str, user_id: int, target_price: float) -> Item:
         vendor = DataSourceFactory.detect_vendor(url)
         source = DataSourceFactory.get(vendor)
 
@@ -56,7 +56,7 @@ class PriceTrackerService:
             "price_history": history,
         }
 
-    def get_items(self, user_id: int):
+    def get_items(self, user_id: int) -> list[UserItem]:
         user = User.query.get_or_404(user_id)
         return user.tracked_items
 
