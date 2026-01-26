@@ -9,4 +9,4 @@ migrate = Migrate()
 login_manager = LoginManager()
 
 # Configure login manager
-login_manager.login_view = "auth.login"
+login_manager.login_view = "auth.login_route"
