@@ -1,5 +1,5 @@
 from ptracker import create_app, db
-from ptracker.models import Users, Items, User_items, Price_history
+from ptracker.models import User, Item, UserItem, PriceHistory
 from werkzeug.security import generate_password_hash
 
 app = create_app()
@@ -11,18 +11,18 @@ with app.app_context():
     db.drop_all()
     db.create_all()
 
-    user1 = Users(
+    user1 = User(
         username="Spongebob",
         email="spongebob@bikinibottom.com",
         password_hash=generate_password_hash(test_password),
     )
-    user2 = Users(
+    user2 = User(
         username="Patrick",
         email="patrick@bikinibottom.com",
         password_hash=generate_password_hash(test_password),
     )
 
-    item1 = Items(vendor="Amazon", url="https://amazon.com/product/123")
+    item1 = Item(vendor="Amazon", url="https://amazon.com/product/123")
 
     db.session.add_all([user1, user2, item1])
     db.session.commit()
