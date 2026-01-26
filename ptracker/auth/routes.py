@@ -12,17 +12,21 @@ def register_route():
         raise Conflict("User is already registered")
 
     data = request.get_json() or {}
-    user = g.auth_service.register_user(data["username"], data["email"], data["password"])
+    user = g.auth_service.register_user(
+        data["username"], data["email"], data["password"]
+    )
     login_user(user, remember=False)
-    return jsonify(
-        {
-            "success": True,
-            "data": {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-            },
-        },
+    return (
+        jsonify(
+            {
+                "success": True,
+                "data": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                },
+            }
+        ),
         201,
     )
 
@@ -35,7 +39,7 @@ def login_route():
     data = request.get_json()
     user = g.auth_service.login(data["email"], data["password"])
     login_user(user, remember=False)
-    return jsonify({"success": True, "data": data}, 200)
+    return jsonify({"success": True, "data": data}), 200
 
 
 @auth_bp.route("/logout", methods=["POST"])
@@ -43,7 +47,7 @@ def logout_route():
     if not current_user.is_authenticated:
         raise Unauthorized("No user is currently logged in")
     logout_user()
-    return jsonify({"success": True, "message": "User logged out"}, 200)
+    return jsonify({"success": True, "message": "User logged out"}), 200
 
 
 # @auth_bp.route("/user/<int:user_id>", methods=["GET"])
@@ -62,4 +66,4 @@ def delete_user(user_id: int):
     if current_user.id != user_id:
         raise ValueError("Cannot delete another user's account")
     g.auth_service.delete_user(user_id)
-    return jsonify({"success": True, "message": "User's Account Deleted"}, 200)
+    return jsonify({"success": True, "message": "User's Account Deleted"}), 200
