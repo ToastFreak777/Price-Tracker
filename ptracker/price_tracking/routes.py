@@ -1,14 +1,16 @@
 from flask import Blueprint, request, jsonify
 from .service import PriceTrackerService
+from flask_login import current_user, login_required
 
 price_bp = Blueprint("price", __name__, url_prefix="/items")
 
 
 @price_bp.route("", methods=["GET"])
+@login_required
 def get_items():
     """Get all items user is tracking"""
 
-    user_id = 1  # I'll add this later when auth is implemented
+    user_id = current_user.id
     service = PriceTrackerService()
 
     try:
@@ -33,12 +35,13 @@ def get_items():
 
 
 @price_bp.route("", methods=["POST"])
+@login_required
 def add_item():
     """Add a new item to track"""
     data = request.get_json()
     url = data.get("url")
     target_price = data.get("target_price")
-    user_id = 1  # I'll add this later when auth is implemented
+    user_id = current_user.id
 
     try:
         service = PriceTrackerService()
@@ -60,6 +63,7 @@ def add_item():
 
 
 @price_bp.route("/<int:item_id>", methods=["GET"])
+@login_required
 def get_item(item_id):
     try:
         service = PriceTrackerService()
@@ -96,9 +100,10 @@ def get_item(item_id):
 
 
 @price_bp.route("/<int:item_id>", methods=["DELETE"])
+@login_required
 def untrack_item(item_id):
 
-    user_id = 1  # I'll add this later when auth is implemented
+    user_id = current_user.id
     service = PriceTrackerService()
 
     try:

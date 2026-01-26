@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 class AuthService:
 
-    def register_user(self, username: str, email: str, password: str):
+    def register_user(self, username: str, email: str, password: str) -> User:
         existing_user = User.query.filter(
             (User.username == username) | (User.email == email)
         ).first()
@@ -21,13 +21,17 @@ class AuthService:
         db.session.commit()
         return new_user
 
-    def authenticate_user(self, email: str, password: str):
+    def login(self, email: str, password: str) -> User:
+        user = self._authenticate_user(email, password)
+        return user
+
+    def _authenticate_user(self, email: str, password: str) -> User:
         user = User.query.filter_by(email=email).first()
         if not user or not check_password_hash(user.password_hash, password):
             raise ValueError("Invalid credentials")
         return user
 
-    def get_user(self, user_id: str):
+    def get_user(self, user_id: str) -> User:
         return User.query.get_or_404(user_id)
 
     # TODO Make sure the currently logged in user is changing their own credentials
