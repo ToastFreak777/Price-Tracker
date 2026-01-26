@@ -1,5 +1,5 @@
 from sqlalchemy import UniqueConstraint
-from ptracker import db
+from ptracker.extensions import db
 from datetime import datetime
 from flask_login import UserMixin
 

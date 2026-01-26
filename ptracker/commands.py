@@ -1,6 +1,6 @@
 import click
 from flask.cli import with_appcontext
-from ptracker import db
+from ptracker.extensions import db
 from ptracker.models import User
 from werkzeug.security import generate_password_hash
 

@@ -1,6 +1,6 @@
 from ptracker.datasources import DataSourceFactory, ProductSnapshot
 from ptracker.models import User, Item, UserItem, PriceHistory
-from ptracker import db
+from ptracker.extensions import db
 
 
 class PriceTrackerService:

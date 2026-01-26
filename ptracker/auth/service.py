@@ -1,5 +1,5 @@
 from ptracker.models import User
-from ptracker import db
+from ptracker.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
