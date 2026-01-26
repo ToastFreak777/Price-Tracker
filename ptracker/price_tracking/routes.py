@@ -10,10 +10,8 @@ price_bp = Blueprint("price", __name__, url_prefix="/items")
 def get_items():
     """Get all items user is tracking"""
 
-    user_id = current_user.id
     service = PriceTrackerService()
-
-    results = service.get_items(user_id)
+    results = service.get_items(current_user.id)
     serialized_items = [
         {
             "user_item_id": ui.id,
@@ -38,10 +36,8 @@ def add_item():
     data = request.get_json()
     url = data.get("url")
     target_price = data.get("target_price")
-    user_id = current_user.id
-
     service = PriceTrackerService()
-    item = service.add_item(url, user_id, target_price)
+    item = service.add_item(url, current_user.id, target_price)
     return (
         jsonify(
             {

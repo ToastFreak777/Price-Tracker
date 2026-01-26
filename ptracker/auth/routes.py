@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
+from werkzeug.exceptions import Conflict, Unauthorized
 from .service import AuthService
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -9,10 +10,7 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 def register_route():
 
     if current_user.is_authenticated:
-        return (
-            jsonify({"success": False, "message": "user is already logged in"}),
-            401,
-        )
+        raise Conflict("User is already registered")
 
     data = request.get_json() or {}
     service = AuthService()
@@ -35,7 +33,7 @@ def register_route():
 def login_route():
 
     if current_user.is_authenticated:
-        return jsonify({"success": False, "message": "user is already logged in"}, 401)
+        raise Conflict("User is already logged in")
     data = request.get_json()
     service = AuthService()
     user = service.login(data["email"], data["password"])
@@ -46,7 +44,7 @@ def login_route():
 @auth_bp.route("/logout", methods=["POST"])
 def logout_route():
     if not current_user.is_authenticated:
-        return jsonify({"success": False, "message": "No user logged in"}, 401)
+        raise Unauthorized("No user is currently logged in")
     logout_user()
     return jsonify({"success": True, "message": "User logged out"}, 200)
 
@@ -62,7 +60,10 @@ def logout_route():
 
 
 @auth_bp.route("/user/<int:user_id>", methods=["DELETE"])
+@login_required
 def delete_user(user_id: int):
+    if current_user.id != user_id:
+        raise ValueError("Cannot delete another user's account")
     service = AuthService()
     service.delete_user(user_id)
     return jsonify({"success": True, "message": "User's Account Deleted"}, 200)
