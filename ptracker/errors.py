@@ -22,7 +22,12 @@ def register_error_handlers(app):
     @app.errorhandler(RateLimitError)
     def handle_rate_limit(e):
         """Handle API rate limit errors"""
-        return jsonify({"success": False, "error": "Rate limit exceeded. Try again later."}), 429
+        return (
+            jsonify(
+                {"success": False, "error": "Rate limit exceeded. Try again later."}
+            ),
+            429,
+        )
 
     @app.errorhandler(DataSourceError)
     def handle_data_source_error(e):
