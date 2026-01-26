@@ -37,6 +37,8 @@ class UserItem(db.Model):
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
     target_price = db.Column(db.Float, nullable=False)
 
+    item = db.relationship("Item", backref="user_items", lazy=True)
+
     __table_args__ = (
         db.UniqueConstraint("user_id", "item_id", name="unique_user_item"),
     )

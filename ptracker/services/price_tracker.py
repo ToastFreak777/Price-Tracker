@@ -1,5 +1,5 @@
 from ptracker.datasources import DataSourceFactory, ProductSnapshot
-from ptracker.models import Item, PriceHistory
+from ptracker.models import User, Item, UserItem, PriceHistory
 from ptracker import db
 
 
@@ -27,6 +27,12 @@ class PriceTrackerService:
         db.session.add(price_record)
         db.session.commit()
 
+        user_item = UserItem(
+            user_id=user_id, item_id=item.id, target_price=target_price
+        )
+        db.session.add(user_item)
+        db.session.commit()
+
         return item
 
     def _fetch_live_snapshot(self, item: Item) -> ProductSnapshot:
@@ -49,6 +55,10 @@ class PriceTrackerService:
             "snapshot": snapshot,
             "price_history": history,
         }
+
+    def get_items(self, user_id: int):
+        user = User.query.get_or_404(user_id)
+        return user.tracked_items
 
     def check_price_update(self, item_id: int) -> bool:
         item = Item.query.get(item_id)

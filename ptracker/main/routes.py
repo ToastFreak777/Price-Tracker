@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, request, jsonify
 from ptracker.services.price_tracker import PriceTrackerService
 from ptracker.api.rapid import search
@@ -14,7 +15,29 @@ def home():
 @main.route("/items", methods=["GET"])
 def get_items():
     """Get all items user is tracking"""
-    return "<h1>Your tracked items</h1>"
+
+    user_id = 1  # I'll add this later when auth is implemented
+    service = PriceTrackerService()
+
+    try:
+        results = service.get_items(user_id)
+        serialized_items = [
+            {
+                "user_item_id": ui.id,
+                "target_price": ui.target_price,
+                "item": {
+                    "id": ui.item.id,
+                    "vendor": ui.item.vendor,
+                    "external_id": ui.item.external_id,
+                    "url": ui.item.url,
+                },
+            }
+            for ui in results
+        ]
+
+        return jsonify({"success": True, "data": serialized_items}), 200
+    except ValueError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
 
 
 @main.route("/items", methods=["POST"])
@@ -89,7 +112,6 @@ def delete_item(item_id):
 # Redundant with get_item for now, may be useful if I add query parameters later
 # @main.route("/items/<int:item_id>/history", methods=["GET"])
 # def get_price_history(item_id):
-#     # TODO: Return all price points
 #     return f"<h1>Price history for item {item_id}</h1>"
 
 
