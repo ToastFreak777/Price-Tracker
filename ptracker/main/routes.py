@@ -1,4 +1,3 @@
-import json
 from flask import Blueprint, request, jsonify
 from ptracker.services.price_tracker import PriceTrackerService
 from ptracker.api.rapid import search
@@ -104,9 +103,16 @@ def get_item(item_id):
 
 
 @main.route("/items/<int:item_id>", methods=["DELETE"])
-def delete_item(item_id):
-    # TODO: Remove item from user's tracked list'
-    return jsonify({"message": f"Item {item_id} deleted"}), 200
+def untrack_item(item_id):
+
+    user_id = 1  # I'll add this later when auth is implemented
+    service = PriceTrackerService()
+
+    try:
+        service.remove_item(user_id, item_id)
+        return jsonify({"message": f"Item {item_id} untracked"}), 200
+    except ValueError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
 
 
 # Redundant with get_item for now, may be useful if I add query parameters later

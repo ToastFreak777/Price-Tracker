@@ -60,6 +60,16 @@ class PriceTrackerService:
         user = User.query.get_or_404(user_id)
         return user.tracked_items
 
+    def remove_item(self, user_id: int, item_id: int):
+        user_item = UserItem.query.filter_by(
+            user_id=user_id, item_id=item_id
+        ).first_or_404()
+        if not user_item:
+            raise ValueError("Item not found in user's tracked list")
+
+        db.session.delete(user_item)
+        db.session.commit()
+
     def check_price_update(self, item_id: int) -> bool:
         item = Item.query.get(item_id)
         if not item:
