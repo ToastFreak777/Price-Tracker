@@ -28,7 +28,7 @@ class Item(db.Model):
     )
 
     def __repr__(self):
-        return f"Item('{self.vendor}', '{self.url}')"
+        return f"Item('{self.vendor}', '{self.url}', '{self.external_id}')"
 
 
 class UserItem(db.Model):
@@ -52,7 +52,9 @@ class PriceHistory(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     # Possible optimization for historical queires
-    # db.index("idx_price_history_item_time", item_id, timestamp)
+    # __table_args__ = (
+    #     db.Index("idx_price_history_item_time", "item_id", "timestamp"),
+    # )
 
     def __repr__(self):
         return f"PriceHistory(Item ID: '{self.item_id}', Price: '{self.price}', Timestamp: '{self.timestamp}')"
