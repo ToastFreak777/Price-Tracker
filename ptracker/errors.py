@@ -42,7 +42,8 @@ def register_error_handlers(app):
     @app.errorhandler(401)
     def handle_unauthorized(e):
         """Handle 401 Unauthorized errors"""
-        return jsonify({"success": False, "error": "Unauthorized"}), 401
+        error_message = e.description if e.description else "Unauthorized"
+        return jsonify({"success": False, "error": error_message}), 401
 
     @app.errorhandler(500)
     def handle_internal_error(e):

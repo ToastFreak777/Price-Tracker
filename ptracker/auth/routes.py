@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, g
 from flask_login import current_user, login_user, logout_user, login_required
-from werkzeug.exceptions import Conflict, Unauthorized
+from werkzeug.exceptions import Conflict, Unauthorized, Forbidden
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -39,7 +39,15 @@ def login_route():
     data = request.get_json()
     user = g.auth_service.login(data["email"], data["password"])
     login_user(user, remember=False)
-    return jsonify({"success": True, "data": data}), 200
+    return (
+        jsonify(
+            {
+                "success": True,
+                "data": {"username": user.username, "email": user.email},
+            }
+        ),
+        200,
+    )
 
 
 @auth_bp.route("/logout", methods=["POST"])

@@ -42,7 +42,14 @@ def auth_user(app):
 
 
 @pytest.fixture
+def client_with_user(client, auth_user):
+    """Client with a user in the database but not logged in"""
+    return client
+
+
+@pytest.fixture
 def auth_client(client, auth_user):
+    """Client with a user logged in"""
     # Log in via API
     client.post(
         "/auth/login",
