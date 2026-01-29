@@ -158,7 +158,7 @@ def test_delete_user_with_incorrect_user(auth_client):
     # User executing command id != 69
     res = auth_client.delete("/auth/user/69")
 
-    assert res.status_code == 400
+    assert res.status_code == 403
     data = res.get_json()
     assert data["success"] is False
     assert "Cannot delete another user's account" in data["error"]

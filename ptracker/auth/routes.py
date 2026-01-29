@@ -72,6 +72,6 @@ def logout_route():
 @login_required
 def delete_user(user_id: int):
     if current_user.id != user_id:
-        raise ValueError("Cannot delete another user's account")
+        raise Forbidden("Cannot delete another user's account")
     g.auth_service.delete_user(user_id)
     return jsonify({"success": True, "message": "User's Account Deleted"}), 200
