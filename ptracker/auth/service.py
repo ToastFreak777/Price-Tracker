@@ -34,7 +34,6 @@ class AuthService:
     def get_user(self, user_id: str) -> User:
         return User.query.get_or_404(user_id)
 
-    # TODO Make sure the currently logged in user is changing their own credentials
     def change_password(self, user_id: int, new_password: str):
         user = User.query.get_or_404(user_id)
         user.password_hash = generate_password_hash(new_password)
