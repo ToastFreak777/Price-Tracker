@@ -52,7 +52,7 @@ class PriceTrackerService:
         return source.fetch_from_url(item.url)
 
     def get_item(self, item_id: int):
-        item = Item.query.get_or_404(item_id)
+        item = Item.query.get_or_404(item_id, f"No item with id: {item_id}")
 
         snapshot = self._fetch_live_snapshot(item)
 
