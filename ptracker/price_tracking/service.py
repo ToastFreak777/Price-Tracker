@@ -5,7 +5,7 @@ from ptracker.extensions import db
 
 class PriceTrackerService:
 
-    def add_item(self, url: str, user_id: int, target_price: float) -> Item:
+    def track_item(self, url: str, user_id: int, target_price: float) -> Item:
         vendor = DataSourceFactory.detect_vendor(url)
         source = DataSourceFactory.get(vendor)
 
@@ -20,12 +20,15 @@ class PriceTrackerService:
             db.session.add(item)
             db.session.flush()
 
-        price_record = PriceHistory(
-            item_id=item.id,
-            price=snapshot.price,
-        )
-        db.session.add(price_record)
-        db.session.commit()
+            price_record = PriceHistory(
+                item_id=item.id,
+                price=snapshot.price,
+            )
+            db.session.add(price_record)
+
+        existing = UserItem.query.filter_by(user_id=user_id, item_id=item.id).first()
+        if existing:
+            raise ValueError("Item already tracked by user")
 
         user_item = UserItem(
             user_id=user_id, item_id=item.id, target_price=target_price
@@ -34,6 +37,15 @@ class PriceTrackerService:
         db.session.commit()
 
         return item
+
+    def update_target_price(self, user_id: int, item_id: int, target_price: float):
+        user_item = UserItem.query.filter_by(
+            user_id=user_id, item_id=item_id
+        ).first_or_404(f"No item with tracked with id: {item_id}")
+
+        user_item.target_price = target_price
+        db.session.commit()
+        return user_item
 
     def _fetch_live_snapshot(self, item: Item) -> ProductSnapshot:
         source = DataSourceFactory.get(item.vendor)
@@ -57,15 +69,13 @@ class PriceTrackerService:
         }
 
     def get_items(self, user_id: int) -> list[UserItem]:
-        user = User.query.get_or_404(user_id)
+        user = User.query.get_or_404(user_id, f"No user with id: {user_id}")
         return user.tracked_items
 
     def remove_item(self, user_id: int, item_id: int):
         user_item = UserItem.query.filter_by(
             user_id=user_id, item_id=item_id
-        ).first_or_404()
-        if not user_item:
-            raise ValueError("Item not found in user's tracked list")
+        ).first_or_404("Item not found in user's tracked list")
 
         db.session.delete(user_item)
         db.session.commit()

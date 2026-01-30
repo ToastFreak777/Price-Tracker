@@ -29,12 +29,12 @@ def get_items():
 
 @price_bp.route("", methods=["POST"])
 @login_required
-def add_item():
+def track_item():
     """Add a new item to track"""
     data = request.get_json()
     url = data.get("url")
     target_price = data.get("target_price")
-    item = g.price_service.add_item(url, current_user.id, target_price)
+    item = g.price_service.track_item(url, current_user.id, target_price)
     return (
         jsonify(
             {
