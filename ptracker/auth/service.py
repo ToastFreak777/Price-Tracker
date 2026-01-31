@@ -7,9 +7,7 @@ from werkzeug.exceptions import NotFound
 class AuthService:
 
     def register_user(self, username: str, email: str, password: str) -> User:
-        existing_user = User.query.filter(
-            (User.username == username) | (User.email == email)
-        ).first()
+        existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
         if existing_user:
             raise ValueError("Username or email already exists")
 

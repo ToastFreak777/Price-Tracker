@@ -12,9 +12,7 @@ class PriceTrackerService:
 
         snapshot = source.fetch_from_url(url)
 
-        item = Item.query.filter_by(
-            vendor=vendor, external_id=snapshot.external_id
-        ).first()
+        item = Item.query.filter_by(vendor=vendor, external_id=snapshot.external_id).first()
 
         if not item:
             item = Item(vendor=vendor, url=url, external_id=snapshot.external_id)
@@ -31,9 +29,7 @@ class PriceTrackerService:
         if existing:
             raise ValueError("Item already tracked by user")
 
-        user_item = UserItem(
-            user_id=user_id, item_id=item.id, target_price=target_price
-        )
+        user_item = UserItem(user_id=user_id, item_id=item.id, target_price=target_price)
         db.session.add(user_item)
         db.session.commit()
 
@@ -59,11 +55,7 @@ class PriceTrackerService:
 
         snapshot = self._fetch_live_snapshot(item)
 
-        history = (
-            PriceHistory.query.filter_by(item_id=item_id)
-            .order_by(PriceHistory.timestamp.desc())
-            .all()
-        )
+        history = PriceHistory.query.filter_by(item_id=item_id).order_by(PriceHistory.timestamp.desc()).all()
 
         return {
             "item": item,
@@ -92,11 +84,7 @@ class PriceTrackerService:
 
         snapshot = self._fetch_live_snapshot(item)
 
-        last_price = (
-            PriceHistory.query.filter_by(item_id=item_id)
-            .order_by(PriceHistory.timestamp.desc())
-            .first()
-        )
+        last_price = PriceHistory.query.filter_by(item_id=item_id).order_by(PriceHistory.timestamp.desc()).first()
 
         if not last_price or last_price.price != snapshot.price:
             db.session.add(PriceHistory(item_id=item.id, price=snapshot.price))

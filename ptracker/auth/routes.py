@@ -12,9 +12,7 @@ def register_route():
         raise Conflict("User is already registered")
 
     data = request.get_json() or {}
-    user = g.auth_service.register_user(
-        data["username"], data["email"], data["password"]
-    )
+    user = g.auth_service.register_user(data["username"], data["email"], data["password"])
     login_user(user, remember=False)
     return (
         jsonify(

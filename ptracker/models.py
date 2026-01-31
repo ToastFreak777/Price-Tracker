@@ -24,9 +24,7 @@ class Item(db.Model):
 
     price_history = db.relationship("PriceHistory", backref="item", lazy=True)
 
-    __table_args__ = (
-        UniqueConstraint("vendor", "external_id", name="unique_vendor_external_id"),
-    )
+    __table_args__ = (UniqueConstraint("vendor", "external_id", name="unique_vendor_external_id"),)
 
     def __repr__(self):
         return f"Item('{self.vendor}', '{self.url}', '{self.external_id}')"
@@ -40,9 +38,7 @@ class UserItem(db.Model):
 
     item = db.relationship("Item", backref="user_items", lazy=True)
 
-    __table_args__ = (
-        db.UniqueConstraint("user_id", "item_id", name="unique_user_item"),
-    )
+    __table_args__ = (db.UniqueConstraint("user_id", "item_id", name="unique_user_item"),)
 
     def __repr__(self):
         return f"UserItem(\
@@ -55,9 +51,7 @@ class PriceHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    timestamp = db.Column(
-        db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
-    )
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
     # Possible optimization for historical queires
     # __table_args__ = (
