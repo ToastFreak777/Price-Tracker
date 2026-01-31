@@ -1,5 +1,5 @@
 from ptracker import create_app, db
-from ptracker.models import User, Item, UserItem, PriceHistory
+from ptracker.models import User, Item
 from werkzeug.security import generate_password_hash
 
 app = create_app()

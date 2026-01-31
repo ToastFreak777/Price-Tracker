@@ -1,0 +1,8 @@
+[flake8]
+exclude = 
+    migrations,
+    .git,
+    __pycache__,
+    venv,
+    env,
+    .pytest_cache

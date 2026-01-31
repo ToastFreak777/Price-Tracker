@@ -24,10 +24,10 @@ def test_login_user_returns_user_with_corrct_data(auth_user):
 def test_login_user_fails_with_wrong_password(auth_user):
     service = AuthService()
     with pytest.raises(ValueError, match="Invalid credentials"):
-        user = service.login("test@example.com", "wrongpassword")
+        service.login("test@example.com", "wrongpassword")
 
 
 def test_login_user_fails_with_wrong_email(auth_user):
     service = AuthService()
     with pytest.raises(ValueError, match="Invalid credentials"):
-        user = service.login("wrong@example.com", "password123")
+        service.login("wrong@example.com", "password123")
