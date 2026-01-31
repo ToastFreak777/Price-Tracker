@@ -53,7 +53,7 @@ jobs:
 
       - name: Security scan
         run: safety check
-        continued-on-error: true
+        continue-on-error: true
 
       - name: Check outdated dependencies
         run: pip list --outdated
