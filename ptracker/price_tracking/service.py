@@ -1,6 +1,7 @@
 from ptracker.datasources import DataSourceFactory, ProductSnapshot
 from ptracker.models import User, Item, UserItem, PriceHistory
 from ptracker.extensions import db
+from werkzeug.exceptions import NotFound
 
 
 class PriceTrackerService:
@@ -39,9 +40,9 @@ class PriceTrackerService:
         return item
 
     def update_target_price(self, user_id: int, item_id: int, target_price: float):
-        user_item = UserItem.query.filter_by(
-            user_id=user_id, item_id=item_id
-        ).first_or_404(f"No item with tracked with id: {item_id}")
+        user_item = UserItem.query.filter_by(user_id=user_id, item_id=item_id).first()
+        if not user_item:
+            raise NotFound(f"No item with tracked with id: {item_id}")
 
         user_item.target_price = target_price
         db.session.commit()
@@ -52,7 +53,9 @@ class PriceTrackerService:
         return source.fetch_from_url(item.url)
 
     def get_item(self, item_id: int):
-        item = Item.query.get_or_404(item_id, f"No item with id: {item_id}")
+        item = db.session.get(Item, item_id)
+        if not item:
+            raise NotFound(f"No item with id: {item_id}")
 
         snapshot = self._fetch_live_snapshot(item)
 
@@ -69,21 +72,23 @@ class PriceTrackerService:
         }
 
     def get_items(self, user_id: int) -> list[UserItem]:
-        user = User.query.get_or_404(user_id, f"No user with id: {user_id}")
+        user = db.session.get(User, user_id)
+        if not user:
+            raise NotFound(f"No user with id: {user_id}")
         return user.tracked_items
 
     def remove_item(self, user_id: int, item_id: int):
-        user_item = UserItem.query.filter_by(
-            user_id=user_id, item_id=item_id
-        ).first_or_404("Item not found in user's tracked list")
+        user_item = UserItem.query.filter_by(user_id=user_id, item_id=item_id).first()
+        if not user_item:
+            raise NotFound("Item not found in user's tracked list")
 
         db.session.delete(user_item)
         db.session.commit()
 
-    def check_price_update(self, item_id: int) -> bool:
-        item = Item.query.get(item_id)
+    def check_price_update(self, item_id: int):
+        item = db.session.get(Item, item_id)
         if not item:
-            return False
+            raise NotFound(f"No item with id: {item_id}")
 
         snapshot = self._fetch_live_snapshot(item)
 
@@ -96,6 +101,3 @@ class PriceTrackerService:
         if not last_price or last_price.price != snapshot.price:
             db.session.add(PriceHistory(item_id=item.id, price=snapshot.price))
             db.session.commit()
-            return True
-
-        return False

@@ -1,6 +1,7 @@
 from ptracker.models import User
 from ptracker.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.exceptions import NotFound
 
 
 class AuthService:
@@ -32,14 +33,21 @@ class AuthService:
         return user
 
     def get_user(self, user_id: str) -> User:
-        return User.query.get_or_404(user_id)
+        user = db.session.get(User, user_id)
+        if not user:
+            raise NotFound("User not found")
+        return user
 
     def change_password(self, user_id: int, new_password: str):
-        user = User.query.get_or_404(user_id)
+        user = db.session.get(User, user_id)
+        if not user:
+            raise NotFound("User not found")
         user.password_hash = generate_password_hash(new_password)
         db.session.commit()
 
     def delete_user(self, user_id: int):
-        user = User.query.get_or_404(user_id)
+        user = db.session.get(User, user_id)
+        if not user:
+            raise NotFound("User not found")
         db.session.delete(user)
         db.session.commit()

@@ -79,9 +79,6 @@ class DataSource(ABC):
         return self.fetch_product(product_id)
 
 
-# TODO implement the custom error messages
-
-
 class DataSourceError(Exception):
     """Base exception for data source errors"""
 

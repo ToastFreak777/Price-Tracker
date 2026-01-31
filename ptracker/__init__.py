@@ -17,7 +17,7 @@ def create_app(config_class=Config):
     def load_user(user_id: str):
         from ptracker.models import User
 
-        return User.query.get(int(user_id))
+        return db.session.get(User, int(user_id))
 
     # Initialize data sources
     from ptracker.datasources import init_datasources

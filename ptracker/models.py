@@ -1,6 +1,6 @@
 from sqlalchemy import UniqueConstraint
 from ptracker.extensions import db
-from datetime import datetime
+from datetime import datetime, timezone
 from flask_login import UserMixin
 
 
@@ -52,7 +52,9 @@ class PriceHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    timestamp = db.Column(
+        db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
+    )
 
     # Possible optimization for historical queires
     # __table_args__ = (

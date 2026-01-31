@@ -10,7 +10,7 @@ class MockDataSource(DataSource):
         return "mock"
 
     def validate_url(self, url: str) -> bool:
-        """Mock URL: https://mock.com/items/5090"""
+        """Mock URL Example: https://mock.com/items/5090"""
         return url.startswith("https://mock.com/")
 
     def extract_product_id(self, url: str) -> str:
