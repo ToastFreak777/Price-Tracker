@@ -1,6 +1,13 @@
-from .base import DataSource, ProductSnapshot, DataSourceError, ProductNotFoundError
+from .base import (
+    DataSource,
+    ProductSnapshot,
+    DataSourceError,
+    ProductNotFoundError,
+    RateLimitError,
+)
 from .mock import MockDataSource
-from .ebay import EbayDataSource
+
+# from .ebay import EbayDataSource
 
 
 class DataSourceFactory:
@@ -34,9 +41,9 @@ def init_datasources(app):
     DataSourceFactory.register("mock", MockDataSource())
 
     # eBay (when credentials available)
-    ebay_key = app.config.get("EBAY_API_KEY")
-    if ebay_key:
-        DataSourceFactory.register("ebay", EbayDataSource(api_key=ebay_key))
+    # ebay_key = app.config.get("EBAY_API_KEY")
+    # if ebay_key:
+    #     DataSourceFactory.register("ebay", EbayDataSource(api_key=ebay_key))
 
 
 __all__ = [
@@ -44,8 +51,9 @@ __all__ = [
     "ProductSnapshot",
     "DataSourceError",
     "ProductNotFoundError",
+    "RateLimitError",
     "DataSourceFactory",
     "MockDataSource",
-    "EbayDataSource",
+    # "EbayDataSource",
     "init_datasources",
 ]
