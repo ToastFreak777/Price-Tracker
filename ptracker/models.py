@@ -45,7 +45,10 @@ class UserItem(db.Model):
     )
 
     def __repr__(self):
-        return f"UserItem(User ID: '{self.user_id}', Item ID: '{self.item_id}', Target Price: '{self.target_price}')"
+        return f"UserItem(\
+            User ID: '{self.user_id}',\
+            Item ID: '{self.item_id}',\
+            Target Price: '{self.target_price}')"
 
 
 class PriceHistory(db.Model):
@@ -62,4 +65,7 @@ class PriceHistory(db.Model):
     # )
 
     def __repr__(self):
-        return f"PriceHistory(Item ID: '{self.item_id}', Price: '{self.price}', Timestamp: '{self.timestamp}')"
+        return f"PriceHistory(\
+            Item ID: '{self.item_id}',\
+            Price: '{self.price}',\
+            Timestamp: '{self.timestamp}')"
