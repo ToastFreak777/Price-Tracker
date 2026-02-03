@@ -1,4 +1,6 @@
-import requests, time, re
+import requests
+import time
+import re
 from .base import DataSource, ProductSnapshot, DataSourceError, ProductNotFoundError, RateLimitError
 
 
