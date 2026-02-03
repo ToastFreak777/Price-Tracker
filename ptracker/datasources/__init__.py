@@ -6,8 +6,7 @@ from .base import (
     RateLimitError,
 )
 from .mock import MockDataSource
-
-# from .ebay import EbayDataSource
+from .ebay import EbayDataSource
 
 
 class DataSourceFactory:
@@ -40,10 +39,11 @@ def init_datasources(app):
     # Always available for testing
     DataSourceFactory.register("mock", MockDataSource())
 
-    # eBay (when credentials available)
-    # ebay_key = app.config.get("EBAY_API_KEY")
-    # if ebay_key:
-    #     DataSourceFactory.register("ebay", EbayDataSource(api_key=ebay_key))
+    ebay_key = app.config.get("EBAY_CLIENT_ID")
+    ebay_secret = app.config.get("EBAY_CLIENT_SECRET")
+
+    if ebay_key and ebay_secret:
+        DataSourceFactory.register("ebay", EbayDataSource(api_key=ebay_key, api_secret=ebay_secret))
 
 
 __all__ = [
@@ -54,6 +54,6 @@ __all__ = [
     "RateLimitError",
     "DataSourceFactory",
     "MockDataSource",
-    # "EbayDataSource",
+    "EbayDataSource",
     "init_datasources",
 ]
