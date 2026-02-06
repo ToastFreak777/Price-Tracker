@@ -32,9 +32,11 @@ def create_app(config_class=Config):
     # Register blueprints
     from ptracker.auth.routes import auth_bp
     from ptracker.price_tracking.routes import price_bp
+    from ptracker.main.routes import main_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(price_bp)
+    app.register_blueprint(main_bp)
 
     # Register error handlers
     from ptracker.errors import register_error_handlers

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='resets.css')}}"
+    />
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
+
+    <!-- Font Awesome -->
+    <script
+      src="https://kit.fontawesome.com/8584c98790.js"
+      crossorigin="anonymous"
+    ></script>
+
+    {% if title %}
+    <title>{{title}}</title>
+    {% else %}
+    <title>Price Tracker</title>
+    {% endif %}
+  </head>
+  <body>
+    <header class="header">
+      <div class="header__title">
+        <i class="fa-solid fa-circle-chevron-down"></i>
+        <h1>Price Tracker</h1>
+      </div>
+
+      <div class="header__top-bar">
+        <div class="header__searchbar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input class="header__input" type="text" placeholder="Search..." />
+        </div>
+
+        <div class="header__actions">
+          <div class="header__theme">
+            <i class="fa-solid fa-sun"></i>
+            <i class="fa-solid fa-moon"></i>
+          </div>
+          <div class="header__profile">
+            <img
+              class="header__avatar"
+              src="https://randomuser.me/api/portraits/men/80.jpg"
+              alt=""
+            />
+            <i class="fa-solid fa-angle-down"></i>
+          </div>
+        </div>
+      </div>
+    </header>
+    {% block content %} {% endblock %}
+
+    <script
+      type="text/javascript"
+      src="{{url_for('static', filename='script.js')}}"
+    ></script>
+  </body>
+</html>

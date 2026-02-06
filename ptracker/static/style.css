@@ -1,0 +1,129 @@
+:root {
+  /* Light Theme Colors */
+  --color-primary: #fdfdfd;
+  --color-secondary: #f6f6fb;
+  --color-placeholder: #bcc1ce;
+}
+
+html.dark-theme {
+  /* Dark Theme Colors */
+  --color-primary: #2a303f;
+  --color-secondary: #212633;
+
+  --font-primary: #f5fafd;
+  --font-secondary: #adb2bf;
+}
+
+body {
+  color: var(--font-primary);
+  background-color: var(--color-secondary);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+
+  background: var(--color-primary);
+  border: 2px solid var(--color-placeholder);
+}
+
+.header__title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+
+  font-size: 0.8em;
+  padding-block: 0.825rem;
+  padding-inline: 1rem 2rem;
+
+  border-right: 2px solid var(--color-placeholder);
+}
+
+.header__top-bar {
+  flex-grow: 2;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.header__searchbar {
+  width: 50%;
+  margin: auto;
+  padding: 0.5rem 1rem;
+
+  outline: 1px solid var(--color-placeholder);
+  background: var(--color-secondary);
+  border-radius: 0.5rem;
+}
+
+.header__input {
+  outline: none;
+  border: none;
+  background: inherit;
+  color: var(--font-primary);
+}
+
+.header__input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-right: 1rem;
+}
+
+.header__theme {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  width: 80px;
+  height: 40px;
+  border-radius: 2rem;
+  background: var(--color-secondary);
+}
+
+.header__profile {
+  display: flex;
+  align-items: center;
+}
+
+.header__avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-inline: 0.5rem;
+}
+
+/* Utilities */
+.active {
+  font-size: 24px;
+}
+
+/* Font Awesome Icons */
+.fa-sun {
+  font-size: 18px;
+  color: #fadf98;
+
+  cursor: pointer;
+}
+.fa-moon {
+  font-size: 18px;
+  color: #6c86b5;
+
+  cursor: pointer;
+}
+.fa-circle-chevron-down {
+  font-size: 30px;
+  color: #68a3ef;
+}
+.fa-magnifying-glass {
+  color: var(--color-placeholder);
+}
+.fa-angle-down {
+  color: var(--color-placeholder);
+  font-size: 12px;
+}
