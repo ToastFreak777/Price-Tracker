@@ -24,34 +24,66 @@
   </head>
   <body>
     <header class="header">
-      <div class="header__title">
-        <i class="fa-solid fa-circle-chevron-down"></i>
-        <h1>Price Tracker</h1>
+      <div class="header__brand">
+        <div class="header__menu-toggle" aria-expanded="false">
+          <i class="fa-solid fa-bars"></i>
+          <i class="fa-solid fa-close"></i>
+        </div>
+        <h1 class="header__title">Price Tracker</h1>
       </div>
 
-      <div class="header__top-bar">
-        <div class="header__searchbar">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input class="header__input" type="text" placeholder="Search..." />
-        </div>
+      <div class="header__search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input class="header__input" type="text" placeholder="Search..." />
+      </div>
 
-        <div class="header__actions">
-          <div class="header__theme">
-            <i class="fa-solid fa-sun"></i>
-            <i class="fa-solid fa-moon"></i>
-          </div>
-          <div class="header__profile">
-            <img
-              class="header__avatar"
-              src="https://randomuser.me/api/portraits/men/80.jpg"
-              alt=""
-            />
-            <i class="fa-solid fa-angle-down"></i>
-          </div>
+      <div class="header__actions">
+        <div class="header__theme">
+          <i class="fa-solid fa-sun"></i>
+          <i class="fa-solid fa-moon"></i>
+        </div>
+        <div class="header__profile">
+          <img
+            class="header__avatar"
+            src="https://randomuser.me/api/portraits/men/80.jpg"
+            alt=""
+          />
         </div>
       </div>
     </header>
-    {% block content %} {% endblock %}
+
+    <aside class="sidebar">
+      <nav class="sidebar__nav">
+        <ul class="sidebar__links">
+          <li class="sidebar__item">
+            <a href="/" class="nav__link active">
+              <i class="fa-solid fa-house"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="/" class="nav__link">
+              <i class="fa-solid fa-plus"></i>
+              <span>Add Product</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="/" class="nav__link">
+              <i class="fa-solid fa-bell"></i>
+              <span>Notifications</span>
+            </a>
+          </li>
+          <li class="sidebar__item">
+            <a href="/" class="nav__link">
+              <i class="fa-solid fa-cog"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="content">{% block content %} {% endblock %}</main>
 
     <script
       type="text/javascript"

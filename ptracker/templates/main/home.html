@@ -1,3 +1,20 @@
 {% extends 'layout.html' %} {% block content %}
-<h1>Price Tracker Home Page :D</h1>
+  <h1 class="content__title">My Tracked Products</h1>
+
+  {% for product in products %}
+  <div class="card">
+    <div class="card__details">
+      <h3>{{ product.name }}</h3>
+      <p>${{ product.price }}</p>
+      <span>+ {{ product.price_drop }}%</span>
+    </div>
+    <div class="card__image">
+      <img
+        src="https://d1ncau8tqf99kp.cloudfront.net/converted/74739_original_local_256x224_v3_converted.webp"
+        alt="product image"
+      />
+    </div>
+  </div>
+  {% endfor %}
+</main>
 {% endblock content %}
