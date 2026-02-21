@@ -23,8 +23,17 @@ body {
   background-color: var(--color-bg-secondary);
 }
 
+a {
+  text-decoration: none;
+}
+
 .container {
   display: flex;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    justify-content: flex-start;
+  }
 }
 
 /* #region Header */
@@ -180,14 +189,10 @@ body {
   border-top: 1px solid var(--color-placeholder);
 
   @media (min-width: 768px) {
-    flex-grow: 1;
-
     position: static;
     height: auto;
     left: 0;
     border-top: none;
-    /* border-right: 1px solid var(--color-placeholder); */
-
     max-width: 230px;
 
     /* Gives the split look on header */
@@ -266,7 +271,6 @@ body {
 }
 
 .nav__link {
-  text-decoration: none;
   color: var(--color-text);
   /* Removes mobile highlight */
   -webkit-tap-highlight-color: transparent;
@@ -279,24 +283,29 @@ body {
 /* #endregion */
 
 /* #region Main */
-.content {
-  flex-grow: 1;
+.main {
+  @media (min-width: 768px) {
+    flex-grow: 1;
+  }
+}
 
+/* #region dashboard */
+.home {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 
-  padding: 2rem;
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
 }
 
-.content__title {
-  font-size: 1.625rem;
-
+.home__title {
   padding-bottom: 0.625rem;
   border-bottom: 1px solid rgba(127.5, 127.5, 127.5, 0.1);
 }
 
-.cards {
+.home__cards {
   display: grid;
   grid-template-rows: auto;
   gap: 1rem;
@@ -306,33 +315,32 @@ body {
   }
 }
 
-.cards-empty {
+.home__cards-empty {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 2rem;
-}
 
-.cards-empty p {
-  font-size: 1.25em;
-  font-weight: bold;
+  p {
+    font-size: 1.25em;
+    font-weight: bold;
 
-  @media (min-width: 768px) {
-    font-size: 1.5em;
+    @media (min-width: 768px) {
+      font-size: 1.5em;
+    }
+  }
+
+  a {
+    color: var(--color-text);
+    background-color: var(--color-bg-accent);
+    border-radius: 0.5rem;
+    font-weight: bold;
+    padding: 0.75rem 5rem;
   }
 }
 
-.cards-empty a {
-  color: var(--color-text);
-  background-color: var(--color-bg-accent);
-  border-radius: 0.5rem;
-  text-decoration: none;
-  font-weight: bold;
-  padding: 0.75rem 5rem;
-}
-
-.card {
+.home__card {
   display: flex;
   justify-content: space-between;
 
@@ -341,48 +349,115 @@ body {
   border-radius: 0.5rem;
   background: var(--color-bg-primary);
 }
-.card__details {
+.home__card-details {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 
   font-weight: bold;
-}
-.card__details p {
-  font-size: 1.5em;
-}
-.card__details span {
-  width: fit-content;
 
-  background-color: green;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  p {
+    font-size: 1.5em;
+  }
+
+  span {
+    width: fit-content;
+
+    background-color: green;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+  }
 }
-.card__image {
+
+.home__card-image {
   width: 120px;
   height: 120px;
   overflow: hidden;
   background: var(--color-bg-primary);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  img:not([src]) {
+    display: none;
+  }
+}
+/* #endregion */
+
+/* #region Add Product */
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  padding-inline: 2rem;
 }
 
-.card__image img {
+.product-form__illustration {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  height: auto;
+  max-width: 400px;
+  margin: auto;
 }
 
-.card__image img:not([src]) {
-  display: none;
+.product-form__title,
+.product-form__info,
+.product-form__back {
+  margin: auto;
 }
 
-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+.product-form__info {
+  color: var(--color-placeholder);
+  margin: auto;
 }
+
+.product-form__label {
+  @media (min-width: 768px) {
+    width: 50%;
+    margin: auto;
+  }
+}
+
+.product-form__input {
+  background: var(--color-bg-primary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+
+  &:focus {
+    outline: 2px solid var(--color-placeholder);
+  }
+
+  @media (min-width: 768px) {
+    width: 50%;
+    margin: auto;
+  }
+}
+
+.product-form__btn {
+  background: var(--color-bg-accent);
+  border: none;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+
+  @media (min-width: 768px) {
+    width: 50%;
+    margin: auto;
+  }
+}
+
+.product-form__link,
+.fa-arrow-left {
+  color: var(--color-placeholder);
+}
+
+/* #endregion */
 
 /* #endregion */
 
@@ -396,7 +471,7 @@ img {
 
 .sidebar {
   transition:
-    left 0.6s ease,
+    left 0.3s ease,
     background-color 0.3s linear,
     color 0.3s linear,
     border-color 0.3s linear;

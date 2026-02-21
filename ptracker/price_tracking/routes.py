@@ -1,7 +1,12 @@
-from flask import Blueprint, request, jsonify, g
+from flask import Blueprint, request, jsonify, g, render_template
 from flask_login import current_user, login_required
 
 price_bp = Blueprint("price", __name__, url_prefix="/items")
+
+
+@price_bp.route("/add")
+def add_product_page():
+    return render_template("product/add_product.html", title="Add Product", current_path=request.path)
 
 
 @price_bp.route("", methods=["GET"])

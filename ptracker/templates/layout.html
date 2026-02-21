@@ -30,7 +30,7 @@
           <i class="fa-solid fa-close"></i>
           <i class="fa-solid fa-circle-chevron-down"></i>
         </div>
-        <h1 class="header__title">Price Tracker</h1>
+        <h2 class="header__title">Price Tracker</h2>
       </div>
 
       <div class="header__search">
@@ -57,14 +57,18 @@
       <aside class="sidebar">
         <nav class="sidebar__nav">
           <ul class="sidebar__links">
-            <li class="sidebar__item active">
+            <li
+              class="sidebar__item {% if current_path in ['/', '/home'] %}active{% endif %}"
+            >
               <a href="/" class="nav__link">
                 <i class="fa-solid fa-house"></i>
                 <span>Dashboard</span>
               </a>
             </li>
-            <li class="sidebar__item">
-              <a href="/" class="nav__link">
+            <li
+              class="sidebar__item {% if current_path == '/items/add' %}active{% endif %}"
+            >
+              <a href="/items/add" class="nav__link">
                 <i class="fa-solid fa-plus"></i>
                 <span>Add Product</span>
               </a>
@@ -85,7 +89,7 @@
         </nav>
       </aside>
 
-      <main class="content">{% block content %} {% endblock %}</main>
+      <main class="main">{% block content %} {% endblock %}</main>
     </div>
 
     <script
