@@ -1,0 +1,106 @@
+{% extends 'layout.html' %} {% block content %}
+
+<form class="product-form">
+  <svg
+    class="product-form__illustration"
+    width="340"
+    height="220"
+    viewBox="0 0 340 220"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <linearGradient id="folderGradient" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#F3F6FB" />
+        <stop offset="100%" stop-color="#E6ECF5" />
+      </linearGradient>
+
+      <linearGradient id="accentGradient" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#4F8CFF" />
+        <stop offset="100%" stop-color="#3B82F6" />
+      </linearGradient>
+    </defs>
+
+    <!-- Back folder -->
+    <rect
+      x="95"
+      y="75"
+      width="150"
+      height="95"
+      rx="14"
+      fill="url(#folderGradient)"
+    />
+
+    <!-- Folder tab -->
+    <rect x="115" y="55" width="85" height="35" rx="10" fill="#E9EFF8" />
+
+    <!-- Front document -->
+    <rect
+      x="75"
+      y="95"
+      width="170"
+      height="105"
+      rx="16"
+      fill="#FFFFFF"
+      stroke="#E2E8F0"
+      stroke-width="2"
+    />
+
+    <!-- Document lines -->
+    <rect x="105" y="125" width="100" height="10" rx="5" fill="#E5EAF2" />
+    <rect x="105" y="145" width="85" height="10" rx="5" fill="#E5EAF2" />
+    <rect x="105" y="165" width="65" height="10" rx="5" fill="#E5EAF2" />
+
+    <!-- Plus circle -->
+    <circle cx="215" cy="105" r="28" fill="url(#accentGradient)" />
+
+    <!-- Plus icon -->
+    <rect x="211" y="90" width="8" height="30" rx="4" fill="#FFFFFF" />
+    <rect x="200" y="101" width="30" height="8" rx="4" fill="#FFFFFF" />
+
+    <!-- Decorative sparkles -->
+    <circle cx="250" cy="65" r="4" fill="#3B82F6" opacity="0.25" />
+    <circle cx="270" cy="95" r="3" fill="#3B82F6" opacity="0.25" />
+    <circle cx="245" cy="135" r="3" fill="#3B82F6" opacity="0.2" />
+  </svg>
+  <h1 class="product-form__title">Add Product</h1>
+  <p class="product-form__info">
+    Enter the product URL below to start tracking its price
+  </p>
+  <label for="product-url" class="product-form__label"> Product URL </label>
+  <input
+    id="product-url"
+    class="product-form__input"
+    type="text"
+    placeholder="Enter product URL"
+  />
+  <button class="product-form__btn" type="button">Start Tracking</button>
+  <div class="product-form__back">
+    <i class="fa-solid fa-arrow-left"></i>
+    <a class="product-form__link" href="/">Back to Dashboard</a>
+  </div>
+</form>
+{% endblock content %}
+
+<!-- <div class="product-form__vendors">
+    <label>
+      <input type="checkbox" name="vendor" value="amazon" />
+      Amazon
+    </label>
+    <label>
+      <input type="checkbox" name="vendor" value="ebay" />
+      eBay
+    </label>
+    <label>
+      <input type="checkbox" name="vendor" value="walmart" />
+      Walmart
+    </label>
+    <label>
+      <input type="checkbox" name="vendor" value="bestbuy" />
+      Best Buy
+    </label>
+    <label>
+      <input type="checkbox" name="vendor" value="newegg" />
+      Newegg
+    </label>
+  </div> -->
