@@ -73,16 +73,24 @@
                 <span>Add Product</span>
               </a>
             </li>
-            <li class="sidebar__item">
-              <a href="/" class="nav__link">
+            <li
+              class="sidebar__item {% if current_path == '/items/alerts' %}active{% endif %}"
+            >
+              <a href="/items/alerts" class="nav__link">
                 <i class="fa-solid fa-bell"></i>
-                <span>Notifications</span>
+                <span>Alerts</span>
               </a>
             </li>
             <li class="sidebar__item">
               <a href="/" class="nav__link">
                 <i class="fa-solid fa-cog"></i>
                 <span>Settings</span>
+              </a>
+            </li>
+            <li class="sidebar__item">
+              <a href="/" class="nav__link">
+                <i class="fa-solid fa-arrow-right-long"></i>
+                <span>Logout</span>
               </a>
             </li>
           </ul>

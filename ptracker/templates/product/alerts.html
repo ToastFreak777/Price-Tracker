@@ -1,0 +1,142 @@
+{% extends 'layout.html' %} {% block content %}
+
+<div class="alerts">
+  {% if not products %}
+  <div class="home__cards-empty">
+    <svg
+      class="cards-empty__illustration"
+      width="320"
+      height="220"
+      viewBox="0 0 320 220"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <!-- Background subtle glow -->
+      <defs>
+        <linearGradient id="folderGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#F4F7FB" />
+          <stop offset="100%" stop-color="#E6ECF5" />
+        </linearGradient>
+        <linearGradient id="glassGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+          <stop offset="100%" stop-color="#DDE6F3" stop-opacity="0.6" />
+        </linearGradient>
+      </defs>
+
+      <!-- Back Folder -->
+      <rect
+        x="80"
+        y="90"
+        width="150"
+        height="80"
+        rx="12"
+        fill="url(#folderGrad)"
+      />
+      <rect x="95" y="75" width="80" height="25" rx="8" fill="#E9EFF8" />
+
+      <!-- Front Folder -->
+      <rect
+        x="60"
+        y="105"
+        width="170"
+        height="85"
+        rx="14"
+        fill="#FFFFFF"
+        stroke="#E2E8F0"
+        stroke-width="2"
+      />
+      <rect x="80" y="88" width="90" height="28" rx="8" fill="#EDF2FA" />
+
+      <!-- Folder Lines -->
+      <rect x="90" y="125" width="110" height="10" rx="5" fill="#E5EAF2" />
+      <rect x="90" y="145" width="90" height="10" rx="5" fill="#E5EAF2" />
+      <rect x="90" y="165" width="70" height="10" rx="5" fill="#E5EAF2" />
+
+      <!-- Magnifying Glass -->
+      <circle
+        cx="190"
+        cy="115"
+        r="38"
+        fill="url(#glassGrad)"
+        stroke="#3B82F6"
+        stroke-width="5"
+      />
+      <line
+        x1="215"
+        y1="140"
+        x2="255"
+        y2="180"
+        stroke="#3B82F6"
+        stroke-width="8"
+        stroke-linecap="round"
+      />
+
+      <!-- Subtle sparkle dots -->
+      <circle cx="120" cy="60" r="4" fill="#3B82F6" opacity="0.3" />
+      <circle cx="250" cy="80" r="3" fill="#3B82F6" opacity="0.3" />
+      <circle cx="260" cy="120" r="2.5" fill="#3B82F6" opacity="0.25" />
+    </svg>
+    <p>Start Tracking Your First Item</p>
+    <a href="/">Add Product</a>
+  </div>
+  {% else %}
+  <div class="alerts__heading">
+    <h1 class="alerts__title">Alerts</h1>
+    <select class="alerts__dropdown">
+      <option value="all">All Alerts</option>
+      <option value="price-drop">Amazon</option>
+      <option value="price-drop">Ebay</option>
+      <option value="price-drop">Best Buy</option>
+      <option value="price-drop">Newegg</option>
+    </select>
+  </div>
+
+  <div class="alerts__row">
+    <div class="alerts__row-header">
+      <p class="alerts__product-header">Product</p>
+      <p class="alerts__target-header">Target Price</p>
+      <p class="alerts__percentage-header">Email</p>
+      <p class="alerts__rule-header">Actions</p>
+      <p class="alerts__actions-header">Edit/Delete</p>
+    </div>
+    {% for product in products[:3] %}
+    <div class="alerts__item">
+      <div class="alerts__vendor">
+        <p class="alerts__vendor-icon">
+          <i class="fa-brands fa-amazon"></i>
+          <span class="alerts__vendor-name">Amazon</span>
+        </p>
+      </div>
+      <label class="alerts__slider" for="slider-toggle-{{loop.index}}">
+        <input
+          type="checkbox"
+          class="alerts__input"
+          id="slider-toggle-{{loop.index}}"
+          checked
+        />
+        <span class="alerts__track"></span>
+      </label>
+      <p class="alerts__product-name">{{ product.name }}</p>
+      <span class="alerts__target-price"
+        >Target Price: {{ product.target_price }} $250.00</span
+      >
+      <p class="alerts__percentage-change">
+        Notify me when price drops
+        <span class="alerts__percentage">10%</span>
+      </p>
+      <div class="alerts__controls">
+        <a href="/" class="alerts__edit">
+          <i class="fa-solid fa-pencil"></i>
+        </a>
+        <!-- TODO change this from link so it doesn't refresh the page on delete -->
+        <a href="/items/alerts" class="alerts__delete">
+          <i class="fa-solid fa-trash"></i>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+{% endblock content %}

@@ -47,6 +47,7 @@ class UserItem(db.Model):
             Target Price: '{self.target_price}')"
 
 
+# TODO: Maybe embed this into the Item Model.
 class PriceHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
