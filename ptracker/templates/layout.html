@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='resets.css')}}"
+    />
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
+
+    <!-- Font Awesome -->
+    <script
+      src="https://kit.fontawesome.com/8584c98790.js"
+      crossorigin="anonymous"
+    ></script>
+
+    {% if title %}
+    <title>{{title}}</title>
+    {% else %}
+    <title>Price Tracker</title>
+    {% endif %}
+  </head>
+  <body>
+    <header class="header">
+      <div class="header__brand">
+        <div class="header__menu-toggle" aria-expanded="false">
+          <i class="fa-solid fa-bars"></i>
+          <i class="fa-solid fa-close"></i>
+          <i class="fa-solid fa-circle-chevron-down"></i>
+        </div>
+        <h2 class="header__title">Price Tracker</h2>
+      </div>
+
+      <div class="header__search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input class="header__input" type="text" placeholder="Search..." />
+      </div>
+
+      <div class="header__actions">
+        <div class="header__theme">
+          <i class="fa-solid fa-sun"></i>
+          <i class="fa-solid fa-moon"></i>
+        </div>
+        <div class="header__profile">
+          <img
+            class="header__avatar"
+            src="https://randomuser.me/api/portraits/men/80.jpg"
+            alt=""
+          />
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- TODO make the whole block clickable not just the link text -->
+      <aside class="sidebar">
+        <nav class="sidebar__nav">
+          <ul class="sidebar__links">
+            <li
+              class="sidebar__item {% if current_path in ['/', '/home'] %}active{% endif %}"
+            >
+              <a href="/" class="nav__link">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li
+              class="sidebar__item {% if current_path == '/items/add' %}active{% endif %}"
+            >
+              <a href="/items/add" class="nav__link">
+                <i class="fa-solid fa-plus"></i>
+                <span>Add Product</span>
+              </a>
+            </li>
+            <li
+              class="sidebar__item {% if current_path == '/items/alerts' %}active{% endif %}"
+            >
+              <a href="/items/alerts" class="nav__link">
+                <i class="fa-solid fa-bell"></i>
+                <span>Alerts</span>
+              </a>
+            </li>
+            <li class="sidebar__item">
+              <a href="/" class="nav__link">
+                <i class="fa-solid fa-cog"></i>
+                <span>Settings</span>
+              </a>
+            </li>
+            <li class="sidebar__item">
+              <a href="/" class="nav__link">
+                <i class="fa-solid fa-arrow-right-long"></i>
+                <span>Logout</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main class="main">{% block content %} {% endblock %}</main>
+    </div>
+
+    <script
+      type="text/javascript"
+      src="{{url_for('static', filename='script.js')}}"
+    ></script>
+  </body>
+</html>

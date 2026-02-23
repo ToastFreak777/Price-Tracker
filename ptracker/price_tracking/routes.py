@@ -1,7 +1,20 @@
-from flask import Blueprint, request, jsonify, g
+from flask import Blueprint, request, jsonify, g, render_template
 from flask_login import current_user, login_required
 
 price_bp = Blueprint("price", __name__, url_prefix="/items")
+
+product = {"name": "Sony WH-1000XM4", "price": 299.99, "price_drop": 8.0}
+products = [product for _ in range(7)]
+
+
+@price_bp.route("/add")
+def add_product_page():
+    return render_template("product/add_product.html", title="Add Product", current_path=request.path)
+
+
+@price_bp.route("/alerts")
+def notifications_page():
+    return render_template("product/alerts.html", title="Alerts", current_path=request.path, products=products)
 
 
 @price_bp.route("", methods=["GET"])

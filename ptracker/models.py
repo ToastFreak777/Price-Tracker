@@ -9,11 +9,12 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(25), nullable=False, default="user")
 
     tracked_items = db.relationship("UserItem", backref="user", lazy=True)
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}')"
+        return f"User('{self.username}', '{self.email}', '{self.role}')"
 
 
 class Item(db.Model):
@@ -47,6 +48,7 @@ class UserItem(db.Model):
             Target Price: '{self.target_price}')"
 
 
+# TODO: Maybe embed this into the Item Model.
 class PriceHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)

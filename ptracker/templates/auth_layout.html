@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='resets.css')}}"
+    />
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
+
+    <!-- Font Awesome -->
+    <script
+      src="https://kit.fontawesome.com/8584c98790.js"
+      crossorigin="anonymous"
+    ></script>
+
+    {% if title %}
+    <title>{{title}}</title>
+    {% else %}
+    <title>Price Tracker Auth</title>
+    {% endif %}
+  </head>
+  <body class="auth-page">
+    <div class="auth__container">
+      <div class="auth__header">
+        <i class="auth__icon fa-solid fa-circle-chevron-down"></i>
+        <h2 class="auth__title">Price Tracker</h2>
+      </div>
+
+      {% block content %} {% endblock %}
+    </div>
+
+    <button class="auth__demo__button" type="button">Try demo</button>
+
+    <script
+      type="text/javascript"
+      src="{{url_for('static', filename='script.js')}}"
+    ></script>
+  </body>
+</html>
