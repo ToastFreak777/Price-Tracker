@@ -1,0 +1,59 @@
+{% extends "auth_layout.html" %} {% block content %}
+<form action="" class="auth__form-group">
+  <h1 class="auth__form__title">Register Account</h1>
+
+  <div class="auth__form__group">
+    <label for="username" class="auth__form__label visually-hidden"
+      >Username</label
+    >
+    <input
+      type="text"
+      id="username"
+      name="username"
+      class="auth__form__input"
+      placeholder="Username"
+    />
+  </div>
+  <div class="auth__form__group">
+    <label for="email" class="auth__form__label visually-hidden">Email</label>
+    <input
+      type="email"
+      id="email"
+      name="email"
+      class="auth__form__input"
+      placeholder="Email"
+    />
+  </div>
+  <div class="auth__form__group">
+    <label for="password" class="auth__form__label visually-hidden"
+      >Password</label
+    >
+    <input
+      type="password"
+      id="password"
+      name="password"
+      class="auth__form__input"
+      placeholder="Password"
+    />
+  </div>
+  <div class="auth__form__group">
+    <label for="confirm_password" class="auth__form__label visually-hidden"
+      >Confirm Password</label
+    >
+    <input
+      type="password"
+      id="confirm_password"
+      name="confirm_password"
+      class="auth__form__input"
+      placeholder="Confirm Password"
+    />
+  </div>
+
+  <button type="submit" class="auth__form__button">Register</button>
+
+  <span class="auth__form__description"
+    >Already have an account?
+    <a class="auth__form__link" href="/auth/login">Login</a></span
+  >
+</form>
+{% endblock %}

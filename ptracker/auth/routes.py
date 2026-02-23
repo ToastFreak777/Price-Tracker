@@ -85,7 +85,7 @@ def get_user_settings(user_id: int):
     return render_template("auth/settings.html", title="Settings", settings=None, current_path=request.path)
 
 
-@auth_bp.route("/auth/demo", methods=["POST"])
+@auth_bp.route("/demo", methods=["POST"])
 def create_demo_session():
     if current_user.is_authenticated:
         raise Conflict("User is already logged in")
@@ -100,3 +100,24 @@ def create_demo_session():
         ),
         200,
     )
+
+
+@auth_bp.route("/login", methods=["GET"])
+def login_page():
+    if current_user.is_authenticated:
+        raise Conflict("User is already logged in")
+    return render_template("auth/login.html", title="Login")
+
+
+@auth_bp.route("/register", methods=["GET"])
+def register_page():
+    if current_user.is_authenticated:
+        raise Conflict("User is already logged in")
+    return render_template("auth/register.html", title="Register")
+
+
+@auth_bp.route("/forgot-password", methods=["GET"])
+def forgot_password_page():
+    if current_user.is_authenticated:
+        raise Conflict("User is already logged in")
+    return render_template("auth/forgot_password.html", title="Forgot Password")
