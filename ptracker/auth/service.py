@@ -6,16 +6,12 @@ from werkzeug.exceptions import NotFound
 
 class AuthService:
 
-    def register_user(self, username: str, email: str, password: str) -> User:
+    def register_user(self, username: str, email: str, password: str, role: str = "user") -> User:
         existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
         if existing_user:
             raise ValueError("Username or email already exists")
 
-        new_user = User(
-            username=username,
-            email=email,
-            password_hash=generate_password_hash(password),
-        )
+        new_user = User(username=username, email=email, password_hash=generate_password_hash(password), role=role)
         db.session.add(new_user)
         db.session.commit()
         return new_user
@@ -49,3 +45,9 @@ class AuthService:
             raise NotFound("User not found")
         db.session.delete(user)
         db.session.commit()
+
+    def get_demo_user(self) -> User:
+        demo_user = User.query.filter_by(email="demo@gmail.com").first()
+        if not demo_user:
+            demo_user = self.register_user("Demo User", "demo@gmail.com", "abc123", role="demo")
+        return demo_user
