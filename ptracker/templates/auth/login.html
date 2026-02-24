@@ -1,31 +1,18 @@
 {% extends "auth_layout.html" %} {% block content %}
-<form action="" class="auth__form-group">
+<form class="auth__form-group" method="post">
+  {{ form.hidden_tag() }}
   <h1 class="auth__form__title">Login</h1>
 
   <div class="auth__form__group">
-    <label for="email" class="auth__form__label visually-hidden">Email</label>
-    <input
-      type="email"
-      id="email"
-      name="email"
-      class="auth__form__input"
-      placeholder="Email"
-    />
+    {{ form.email.label(class="auth__form__label visually-hidden") }}
+    {{form.email(class="auth__form__input", placeholder="Email") }}
   </div>
   <div class="auth__form__group">
-    <label for="password" class="auth__form__label visually-hidden"
-      >Password</label
-    >
-    <input
-      type="password"
-      id="password"
-      name="password"
-      class="auth__form__input"
-      placeholder="Password"
-    />
+    {{ form.password.label(class="auth__form__label visually-hidden") }} {{
+    form.password(class="auth__form__input", placeholder="Password") }}
   </div>
 
-  <button type="submit" class="auth__form__button">Login</button>
+  {{ form.submit(class="auth__form__button") }}
 
   <a href="/auth/forgot-password" class="auth__form__link">Forgot password?</a>
 

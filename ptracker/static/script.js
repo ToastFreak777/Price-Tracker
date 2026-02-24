@@ -1,38 +1,60 @@
-const html = document.documentElement;
-const sun = document.querySelector(".fa-sun");
-const moon = document.querySelector(".fa-moon");
-const sidebar = document.querySelector(".sidebar");
-const menu = document.querySelector(".header__menu-toggle");
+const app = {
+  initTheme: () => {
+    const html = document.documentElement;
+    const themeToggle = document.querySelector(".header__theme");
 
-const storedTheme = localStorage.getItem("theme");
-// const prefersDark = false;
-const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+        const isDark = html.classList.toggle("dark-theme");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+      });
+    }
+  },
 
-if (storedTheme === "dark" || (!storedTheme && prefersDark)) {
-  html.classList.add("dark-theme");
-  sun.style.display = "block";
-  moon.style.display = "none";
-} else {
-  sun.style.display = "none";
-  moon.style.display = "block";
-}
+  initSidebar: () => {
+    const menu = document.querySelector(".header__menu-toggle");
+    const sidebar = document.querySelector(".sidebar");
 
-sun.addEventListener("click", () => {
-  html.classList.remove("dark-theme");
-  //   localStorage.setItem("theme", "light");
-  sun.style.display = "none";
-  moon.style.display = "block";
-});
+    if (!menu || !sidebar) return;
 
-moon.addEventListener("click", () => {
-  html.classList.add("dark-theme");
-  //   localStorage.setItem("theme", "dark");
-  sun.style.display = "block";
-  moon.style.display = "none";
-});
+    menu.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+      menu.classList.toggle("open");
+      menu.setAttribute("aria-expanded", menu.classList.contains("open"));
+    });
+  },
 
-menu.addEventListener("click", () => {
-  sidebar.classList.toggle("open");
-  menu.classList.toggle("open");
-  menu.setAttribute("aria-expanded", menu.classList.contains("open"));
+  initDemo: () => {
+    const demoBtn = document.querySelector(".auth__demo__button");
+
+    if (!demoBtn) return;
+
+    demoBtn.addEventListener("click", async () => {
+      try {
+        const res = await fetch("/auth/demo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          console.error("Demo failed:", errorData.message || "Unknown error");
+          return;
+        }
+
+        const data = await res.json();
+        if (data.success && data.redirect) {
+          window.location.href = data.redirect;
+        }
+      } catch (err) {
+        console.error("Demo request failed:", err);
+      }
+    });
+  },
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  app.initTheme();
+  app.initSidebar();
+  app.initDemo();
 });

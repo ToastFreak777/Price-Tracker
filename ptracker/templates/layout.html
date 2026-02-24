@@ -16,6 +16,18 @@
       crossorigin="anonymous"
     ></script>
 
+    <script>
+      (function () {
+        const storedTheme = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        if (storedTheme === "dark" || (!storedTheme && prefersDark)) {
+          document.documentElement.classList.add("dark-theme");
+        }
+      })();
+    </script>
+
     {% if title %}
     <title>{{title}}</title>
     {% else %}
@@ -89,7 +101,7 @@
               </a>
             </li>
             <li class="sidebar__item">
-              <a href="/" class="nav__link">
+              <a href="/auth/logout" class="nav__link">
                 <i class="fa-solid fa-arrow-right-long"></i>
                 <span>Logout</span>
               </a>

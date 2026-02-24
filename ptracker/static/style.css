@@ -1,4 +1,5 @@
 :root {
+  --theme: ☀️;
   color-scheme: light;
   --color-bg-primary: #fcfbfc;
   --color-bg-secondary: #f4f4f8;
@@ -6,15 +7,22 @@
   --color-searchbar: #eeeff5;
   --color-placeholder: #bcc1ce;
   --color-text: #3b4452;
+
+  --sun-display: none;
+  --moon-display: block;
 }
 
 html.dark-theme {
+  --theme: 🌑;
   color-scheme: dark;
   --color-bg-primary: #38404e;
   --color-bg-secondary: #212633;
   --color-searchbar: #323948;
   --color-text: #f5fafd;
   --color-secondary: #adb2bf;
+
+  --sun-display: block;
+  --moon-display: none;
 }
 
 body {
@@ -161,10 +169,12 @@ a {
 }
 
 .header__theme .fa-sun {
+  display: var(--sun-display);
   color: #fadf98;
   cursor: pointer;
 }
 .header__theme .fa-moon {
+  display: var(--moon-display);
   color: #6c86b5;
   cursor: pointer;
 }
