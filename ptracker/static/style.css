@@ -10,6 +10,8 @@
 
   --sun-display: none;
   --moon-display: block;
+
+  background-color: var(--color-bg-secondary);
 }
 
 html.dark-theme {
@@ -23,6 +25,8 @@ html.dark-theme {
 
   --sun-display: block;
   --moon-display: none;
+
+  background-color: var(--color-bg-secondary);
 }
 
 body {
@@ -661,6 +665,10 @@ a {
     background-color 0.3s linear,
     color 0.3s linear,
     border-color 0.3s linear;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
 }
 
 .sidebar {
