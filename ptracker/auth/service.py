@@ -51,3 +51,5 @@ class AuthService:
         if not demo_user:
             demo_user = self.register_user("Demo User", "demo@gmail.com", "abc123", role="demo")
         return demo_user
+
+    

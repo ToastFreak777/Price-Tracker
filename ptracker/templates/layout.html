@@ -93,8 +93,10 @@
                 <span>Alerts</span>
               </li>
             </a>
-            <a href="/" class="nav__link">
-              <li class="sidebar__item">
+            <a href="/auth/user/settings" class="nav__link">
+              <li
+                class="sidebar__item {% if current_path == '/auth/user/settings' %}active{% endif %}"
+              >
                 <i class="fa-solid fa-cog"></i>
                 <span>Settings</span>
               </li>

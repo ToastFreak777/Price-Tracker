@@ -2,6 +2,7 @@
 <form class="auth__form-group" method="post">
   {{ form.hidden_tag() }}
   <h1 class="auth__form__title">Login</h1>
+  <!-- TODO: frontend should show error messages from form validation and API responses as a toast  -->
 
   <div class="auth__form__group">
     {{ form.email.label(class="auth__form__label visually-hidden") }}

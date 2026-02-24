@@ -1,0 +1,61 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="settings">
+  <h1 class="settings__title">Settings</h1>
+
+  <div class="settings__grid">
+    <div class="settings__profile">
+      <h3 class="settings__profile-title">Profile</h3>
+      <section class="settings__profile-card">
+        <div class="settings__profile-info">
+          <img
+            src="https://wallpapers-clan.com/wp-content/uploads/2022/08/default-pfp-18.jpg"
+            alt="Profile"
+            class="settings__profile-avatar"
+          />
+          <div>
+            <p class="settings__profile-username">
+              {{ current_user.username }}
+            </p>
+            <p class="settings__profile_email">{{ current_user.email }}</p>
+          </div>
+        </div>
+        <button class="settings__profile-edit-btn">Edit Profile</button>
+      </section>
+    </div>
+
+    <section class="settings__card-container">
+      <section class="settings__card">
+        <h3 class="settings__card-title">Email Preferences</h3>
+        <div class="settings__card-info">
+          <p>Receive price drop emails</p>
+          <label class="alerts__slider" for="slider-toggle-email">
+            <input
+              type="checkbox"
+              class="alerts__input"
+              id="slider-toggle-email"
+              checked
+            />
+            <span class="alerts__track"></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="settings__card">
+        <h3 class="settings__card-title">SMS Preferences</h3>
+        <div class="settings__card-info">
+          <p>Receive price drop texts</p>
+          <label class="alerts__slider" for="slider-toggle-sms">
+            <input
+              type="checkbox"
+              class="alerts__input"
+              id="slider-toggle-sms"
+              disabled
+            />
+            <span class="alerts__track"></span>
+          </label>
+        </div>
+      </section>
+    </section>
+  </div>
+</div>
+{% endblock content %}

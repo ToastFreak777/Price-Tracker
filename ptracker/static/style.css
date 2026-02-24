@@ -5,7 +5,7 @@
   --color-bg-secondary: #f4f4f8;
   --color-bg-accent: #3b82f6;
   --color-searchbar: #eeeff5;
-  --color-placeholder: #bcc1ce;
+  --color-placeholder: #a1a4b0;
   --color-text: #3b4452;
 
   --sun-display: none;
@@ -654,7 +654,122 @@ a {
 
 /* #region Settings */
 .settings {
+  padding: 2rem;
 }
+
+.settings__grid {
+  display: grid;
+  gap: 1rem;
+
+  margin-top: 1rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 300px auto;
+  }
+}
+
+.settings__profile {
+  @media (min-width: 768px) {
+    grid-row: span 2;
+    background: var(--color-bg-primary);
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+}
+
+.settings__profile-card {
+  display: grid;
+  gap: 0.5rem;
+
+  background: var(--color-bg-primary);
+  border-radius: 0.5rem;
+  padding: 1rem 0.5rem;
+}
+
+.settings__profile-info {
+  display: flex;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+
+  border-bottom: 1px solid var(--color-placeholder);
+
+  @media (min-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    border: none;
+  }
+}
+
+.settings__profile-avatar {
+  grid-area: avatar;
+
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+
+  @media (min-width: 768px) {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+.settings__profile-username {
+  font-weight: bold;
+}
+
+.settings__profile-email {
+  color: var(--color-placeholder);
+}
+
+.settings__profile-username,
+.settings__profile-email {
+  text-align: center;
+
+  @media (min-width: 768px) {
+    font-size: 1.25em;
+  }
+}
+
+.settings__profile-edit-btn {
+  width: 100%;
+  color: var(--color-bg-accent);
+  background: var(--color-bg-primary);
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+
+  @media (min-width: 768px) {
+    padding: 0.25rem 1rem;
+    border: 1px solid var(--color-placeholder);
+  }
+}
+
+.settings__card {
+  margin: 1rem auto;
+}
+
+.settings__card-title {
+  font-size: 0.8em;
+  color: var(--color-placeholder);
+  margin-bottom: 0.5rem;
+}
+
+.settings__card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  padding: 0.5rem 0.75rem;
+  background: var(--color-bg-primary);
+  border-radius: 0.25rem;
+}
+
+.settings__card .alerts__slider {
+  display: flex;
+  align-items: center;
+}
+
 /* #endregion */
 
 /* #endregion */

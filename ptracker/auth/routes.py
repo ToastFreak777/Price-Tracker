@@ -115,14 +115,11 @@ def delete_user(user_id: int):
     return jsonify({"success": True, "message": "User's Account Deleted"}), 200
 
 
-@auth_bp.route("/user/<int:user_id>/settings")
+@auth_bp.route("/user/settings")
 @login_required
-def get_user_settings(user_id: int):
-    if current_user.id != user_id:
-        raise Forbidden("Cannot access another user's settings")
-    # settings = g.auth_service.get_user_settings(user_id)
-    # return jsonify({"success": True, "data": settings}), 200
-    return render_template("auth/settings.html", title="Settings", settings=None, current_path=request.path)
+def get_user_settings():
+    user_settings = g.auth_service.get_user(current_user.id)
+    return render_template("auth/settings.html", title="Settings", settings=user_settings, current_path=request.path)
 
 
 @auth_bp.route("/demo", methods=["POST"])
