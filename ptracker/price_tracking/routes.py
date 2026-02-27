@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, g, render_template
+from flask import Blueprint, request, jsonify, g, render_template, redirect, url_for
 from flask_login import current_user, login_required
 
 from ptracker.price_tracking.forms import TrackProductForm
@@ -15,8 +15,9 @@ def add_product_page():
     form = TrackProductForm()
 
     if form.validate_on_submit():
-        target_price = 0  # Placeholder until I add this to the form
+        target_price = 500  # Placeholder until I add this to the form
         g.price_service.track_item(form.product_url.data, current_user.id, target_price)
+        return redirect(url_for("main.home_page"))
 
     return render_template("product/add_product.html", title="Add Product", current_path=request.path, form=form)
 

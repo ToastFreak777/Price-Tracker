@@ -88,7 +88,7 @@ class PriceTrackerService:
             "price_history": history,
         }
 
-    def get_items(self, user_id: int) -> list[UserItem]:
+    def get_user_tracked_items(self, user_id: int) -> list[UserItem]:
         user = db.session.get(User, user_id)
         if not user:
             raise NotFound(f"No user with id: {user_id}")
@@ -126,7 +126,6 @@ class PriceTrackerService:
         for user_item in user.tracked_items:
             item = user_item.item
 
-            # Refresh stale data if requested
             if refresh_stale and item.is_stale(max_age_hours=1):
                 try:
                     snapshot = self._fetch_live_snapshot(item)
@@ -139,12 +138,14 @@ class PriceTrackerService:
 
                     db.session.commit()
                 except Exception as e:
-                    # Log error but don't fail entire request
                     print(f"Error refreshing item {item.id}: {e}")
 
+            prev_price = (
+                PriceHistory.query.filter_by(item_id=item.id).order_by(PriceHistory.timestamp.desc()).offset(1).first()
+            )
             price_drop = None
-            if item.current_price and user_item.target_price:
-                price_drop = ((user_item.target_price - item.current_price) / user_item.target_price) * 100
+            if prev_price and prev_price.price != 0:
+                price_drop = ((prev_price.price - item.current_price) / prev_price.price) * 100
 
             result.append(
                 {

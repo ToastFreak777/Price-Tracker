@@ -83,19 +83,24 @@
   {% else %}
   <div class="home__cards">
     {% for product in products %}
-    <div class="home__card">
+    <a href="{{product.item.url}}" target="_blank" class="home__card">
       <div class="home__card-details">
-        <h3>{{ product.name }}</h3>
-        <p>${{ product.price }}</p>
+        {% if product.item.name|length > 25 %}
+        <h3>{{ product.item.name[:25] }}...</h3>
+        {% else %}
+        <h3>{{ product.item.name }}</h3>
+        {% endif %}
+        <p>{{ product.item.currency }} {{ product.current_price }}</p>
+        {% if product.price_drop %} {% if product.price_drop > 0 %}
         <span>+ {{ product.price_drop }}%</span>
+        {% else %}
+        <span>- {{ product.price_drop }}%</span>
+        {% endif %} {% endif %}
       </div>
       <div class="home__card-image">
-        <img
-          src="https://d1ncau8tqf99kp.cloudfront.net/converted/74739_original_local_256x224_v3_converted.webp"
-          alt="product image"
-        />
+        <img src="{{ product.item.image_url }}" alt="product image" />
       </div>
-    </div>
+    </a>
     {% endfor %}
   </div>
   {% endif %}
