@@ -15,14 +15,21 @@ class PriceTrackerService:
         item = Item.query.filter_by(vendor=vendor, external_id=snapshot.external_id).first()
 
         if not item:
-            item = Item(vendor=vendor, url=url, external_id=snapshot.external_id)
+            item = Item(
+                vendor=vendor,
+                url=url,
+                external_id=snapshot.external_id,
+                name=snapshot.name,
+                currency=snapshot.currency,
+                current_price=snapshot.price,
+                image_url=snapshot.image_url,
+                in_stock=snapshot.in_stock,
+                last_fetched=snapshot.timestamp,
+            )
             db.session.add(item)
             db.session.flush()
 
-            price_record = PriceHistory(
-                item_id=item.id,
-                price=snapshot.price,
-            )
+            price_record = PriceHistory(item_id=item.id, price=item.current_price)
             db.session.add(price_record)
 
         existing = UserItem.query.filter_by(user_id=user_id, item_id=item.id).first()
@@ -48,18 +55,37 @@ class PriceTrackerService:
         source = DataSourceFactory.get(item.vendor)
         return source.fetch_from_url(item.url)
 
+    def _update_item_cache(self, item: Item, snapshot: ProductSnapshot):
+        from datetime import datetime, timezone
+
+        item.name = snapshot.name
+        item.image_url = snapshot.image_url
+        item.currency = snapshot.currency
+        item.current_price = snapshot.price
+        item.in_stock = snapshot.in_stock
+        item.last_fetched = datetime.now(timezone.utc)
+
     def get_item(self, item_id: int):
         item = db.session.get(Item, item_id)
         if not item:
             raise NotFound(f"No item with id: {item_id}")
 
-        snapshot = self._fetch_live_snapshot(item)
+        # Only fetch live data if cache is stale
+        if item.is_stale(max_age_hours=1):
+            snapshot = self._fetch_live_snapshot(item)
+            print(snapshot)
+            old_price = item.current_price
+            self._update_item_cache(item, snapshot)
+
+            if old_price != snapshot.price:
+                db.session.add(PriceHistory(item_id=item.id, price=snapshot.price))
+
+            db.session.commit()
 
         history = PriceHistory.query.filter_by(item_id=item_id).order_by(PriceHistory.timestamp.desc()).all()
 
         return {
             "item": item,
-            "snapshot": snapshot,
             "price_history": history,
         }
 
@@ -83,9 +109,51 @@ class PriceTrackerService:
             raise NotFound(f"No item with id: {item_id}")
 
         snapshot = self._fetch_live_snapshot(item)
+        old_price = item.current_price
+        self._update_item_cache(item, snapshot)
 
-        last_price = PriceHistory.query.filter_by(item_id=item_id).order_by(PriceHistory.timestamp.desc()).first()
-
-        if not last_price or last_price.price != snapshot.price:
+        if old_price != snapshot.price:
             db.session.add(PriceHistory(item_id=item.id, price=snapshot.price))
-            db.session.commit()
+
+        db.session.commit()
+
+    def get_user_tracked_items(self, user_id: int, refresh_stale: bool = True):
+        """Get user's tracked items with full details, optionally refreshing stale data"""
+        user = db.session.get(User, user_id)
+        if not user:
+            raise NotFound(f"No user with id: {user_id}")
+
+        result = []
+        for user_item in user.tracked_items:
+            item = user_item.item
+
+            # Refresh stale data if requested
+            if refresh_stale and item.is_stale(max_age_hours=1):
+                try:
+                    snapshot = self._fetch_live_snapshot(item)
+                    old_price = item.current_price
+                    self._update_item_cache(item, snapshot)
+
+                    # Update price history if price changed
+                    if old_price != snapshot.price:
+                        db.session.add(PriceHistory(item_id=item.id, price=snapshot.price))
+
+                    db.session.commit()
+                except Exception as e:
+                    # Log error but don't fail entire request
+                    print(f"Error refreshing item {item.id}: {e}")
+
+            price_drop = None
+            if item.current_price and user_item.target_price:
+                price_drop = ((user_item.target_price - item.current_price) / user_item.target_price) * 100
+
+            result.append(
+                {
+                    "item": item,
+                    "user_item": user_item,
+                    "current_price": item.current_price,
+                    "price_drop": price_drop,
+                }
+            )
+
+        return result

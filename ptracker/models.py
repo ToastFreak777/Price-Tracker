@@ -14,7 +14,7 @@ class User(db.Model, UserMixin):
     tracked_items = db.relationship("UserItem", backref="user", lazy=True)
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}', '{self.role}')"
+        return f"<User id={self.id} username={self.username} role={self.role}>"
 
 
 class Item(db.Model):
@@ -42,7 +42,7 @@ class Item(db.Model):
         return age_seconds > max_age_hours * 3600
 
     def __repr__(self):
-        return f"Item('{self.vendor}', '{self.url}', '{self.external_id}')"
+        return f"<Item id={self.id} vendor={self.vendor}, external_id={self.external_id}>"
 
 
 class UserItem(db.Model):
@@ -56,13 +56,9 @@ class UserItem(db.Model):
     __table_args__ = (db.UniqueConstraint("user_id", "item_id", name="unique_user_item"),)
 
     def __repr__(self):
-        return f"UserItem(\
-            User ID: '{self.user_id}',\
-            Item ID: '{self.item_id}',\
-            Target Price: '{self.target_price}')"
+        return f"<UserItem id={self.id} user_id={self.user_id} item_id={self.item_id} target_price={self.target_price}>"
 
 
-# TODO: Maybe embed this into the Item Model.
 class PriceHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
@@ -75,7 +71,4 @@ class PriceHistory(db.Model):
     # )
 
     def __repr__(self):
-        return f"PriceHistory(\
-            Item ID: '{self.item_id}',\
-            Price: '{self.price}',\
-            Timestamp: '{self.timestamp}')"
+        return f"<PriceHistory id={self.id} item_id={self.item_id} price={self.price} timestamp={self.timestamp}>"

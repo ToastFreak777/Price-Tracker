@@ -1,15 +1,24 @@
 from flask import Blueprint, request, jsonify, g, render_template
 from flask_login import current_user, login_required
 
+from ptracker.price_tracking.forms import TrackProductForm
+
 price_bp = Blueprint("price", __name__, url_prefix="/items")
 
 product = {"name": "Sony WH-1000XM4", "price": 299.99, "price_drop": 8.0}
 products = [product for _ in range(7)]
 
 
-@price_bp.route("/add")
+@price_bp.route("/add", methods=["GET", "POST"])
+@login_required
 def add_product_page():
-    return render_template("product/add_product.html", title="Add Product", current_path=request.path)
+    form = TrackProductForm()
+
+    if form.validate_on_submit():
+        target_price = 0  # Placeholder until I add this to the form
+        g.price_service.track_item(form.product_url.data, current_user.id, target_price)
+
+    return render_template("product/add_product.html", title="Add Product", current_path=request.path, form=form)
 
 
 @price_bp.route("/alerts")

@@ -1,6 +1,8 @@
 {% extends 'layout.html' %} {% block content %}
 
-<form class="product-form">
+<form class="product-form" method="POST">
+  {{ form.hidden_tag() }}
+
   <svg
     class="product-form__illustration"
     width="340"
@@ -67,14 +69,11 @@
   <p class="product-form__info">
     Enter the product URL below to start tracking its price
   </p>
-  <label for="product-url" class="product-form__label"> Product URL </label>
-  <input
-    id="product-url"
-    class="product-form__input"
-    type="text"
-    placeholder="Enter product URL"
-  />
-  <button class="product-form__btn" type="button">Start Tracking</button>
+
+  {{ form.product_url.label(class="product-form__label") }}
+  {{form.product_url(class="product-form__input", placeholder="Enter product
+  URL")}} {{ form.submit(class="product-form__btn") }}
+
   <div class="product-form__back">
     <i class="fa-solid fa-arrow-left"></i>
     <a class="product-form__link" href="/">Back to Dashboard</a>
