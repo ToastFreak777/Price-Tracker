@@ -52,7 +52,6 @@ def test_get_item_returns_correct_data(auth_client):
 
     result = service.get_item(1)
     assert "item" in result
-    assert "snapshot" in result
     assert "price_history" in result
     assert isinstance(result["price_history"], list)
 

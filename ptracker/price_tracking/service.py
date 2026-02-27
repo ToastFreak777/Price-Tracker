@@ -73,7 +73,6 @@ class PriceTrackerService:
         # Only fetch live data if cache is stale
         if item.is_stale(max_age_hours=1):
             snapshot = self._fetch_live_snapshot(item)
-            print(snapshot)
             old_price = item.current_price
             self._update_item_cache(item, snapshot)
 

@@ -75,9 +75,10 @@ def track_item():
 def get_item(item_id):
     result = g.price_service.get_item(item_id)
 
-    snapshot = result["snapshot"]
-    if snapshot.timestamp:
-        snapshot.timestamp = snapshot.timestamp.isoformat()
+    item = result["item"]
+    last_fetched_iso = None
+    if item.last_fetched:
+        last_fetched_iso = item.last_fetched.isoformat()
 
     serialized_history = [
         {
@@ -93,7 +94,18 @@ def get_item(item_id):
                 "success": True,
                 "data": {
                     "id": item_id,
-                    "snapshot": result["snapshot"],
+                    "item": {
+                        "id": item.id,
+                        "vendor": item.vendor,
+                        "external_id": item.external_id,
+                        "url": item.url,
+                        "name": item.name,
+                        "currency": item.currency,
+                        "current_price": item.current_price,
+                        "image_url": item.image_url,
+                        "in_stock": item.in_stock,
+                        "last_fetched": last_fetched_iso,
+                    },
                     "price_history": serialized_history,
                 },
             }

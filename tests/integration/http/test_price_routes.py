@@ -20,7 +20,6 @@ def test_price_tracking_flow(auth_client):
     assert res.status_code == 200
     payload = res.get_json()["data"]
     assert payload["id"] == item_id
-    assert "snapshot" in payload
     assert "price_history" in payload
 
     # Untrack item

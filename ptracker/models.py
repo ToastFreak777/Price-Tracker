@@ -38,7 +38,11 @@ class Item(db.Model):
         if not self.last_fetched:
             return True
 
-        age_seconds = (datetime.now(timezone.utc) - self.last_fetched).total_seconds()
+        # Ensure last_fetched is timezone-aware (SQLite returns naive datetimes)
+        last_fetched_utc = (
+            self.last_fetched.replace(tzinfo=timezone.utc) if self.last_fetched.tzinfo is None else self.last_fetched
+        )
+        age_seconds = (datetime.now(timezone.utc) - last_fetched_utc).total_seconds()
         return age_seconds > max_age_hours * 3600
 
     def __repr__(self):
