@@ -47,7 +47,7 @@ def register_page():
 @auth_bp.route("/forgot-password", methods=["GET"])
 def forgot_password_page():
     if current_user.is_authenticated:
-        raise Conflict("User is already logged in")
+        return redirect(url_for("main.home_page"))
     return render_template("auth/forgot_password.html", title="Forgot Password")
 
 
@@ -57,30 +57,6 @@ def logout():
         raise Unauthorized("No user is currently logged in")
     logout_user()
     return redirect(url_for("auth.login_page"))
-
-
-@auth_bp.route("/api/register", methods=["POST"])
-def register_api():
-
-    if current_user.is_authenticated:
-        raise Conflict("User is already registered")
-
-    data = request.get_json() or {}
-    user = g.auth_service.register_user(data["username"], data["email"], data["password"])
-    login_user(user, remember=False)
-    return (
-        jsonify(
-            {
-                "success": True,
-                "data": {
-                    "id": user.id,
-                    "username": user.username,
-                    "email": user.email,
-                },
-            }
-        ),
-        201,
-    )
 
 
 @auth_bp.route("/user/settings")

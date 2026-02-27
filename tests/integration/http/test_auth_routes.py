@@ -11,7 +11,7 @@ class TestLoginPage:
         # auth_client is already logged in
         res = auth_client.get("/auth/login")
         assert res.status_code == 302  # redirect
-        assert res.headers["Location"].endswith("/home")
+        assert "/home" in res.location
 
     def test_login_form_submission_success(self, client, auth_user):
         res = client.post(
@@ -40,7 +40,7 @@ class TestLoginPage:
         )
 
         assert res.status_code == 302
-        assert res.headers["Location"].endswith(next_url)
+        assert next_url in res.location
 
 
 class TestRegisterPage:
@@ -59,7 +59,7 @@ class TestRegisterPage:
         # auth_client is already logged in
         res = auth_client.get("/auth/register")
         assert res.status_code == 302  # redirect
-        assert res.headers["Location"].endswith("/home")
+        assert "/home" in res.location
 
     def test_register_form_submission_success(self, client):
         res = client.post(
@@ -102,12 +102,60 @@ class TestRegisterPage:
 
         assert b"Username or email already exists" in res.data
 
+    def test_register_form_submission_duplicate_email(self, client, auth_user):
+        res = client.post(
+            "/auth/register",
+            data={
+                "username": auth_user.username,
+                "email": "test@test.com",
+                "password": "password123",
+                "confirm_password": "password123",
+            },
+        )
+
+        assert b"Username or email already exists" in res.data
+
+
+class TestForgotPasswordPage:
+    def test_forgot_password_page_renders(self, client):
+        res = client.get("/auth/forgot-password")
+        assert res.status_code == 200
+        assert b"Forgot Password" in res.data
+
+    def test_forgot_password_page_redirects_authenticated_user(self, auth_client):
+        # auth_client is already logged in
+        res = auth_client.get("/auth/forgot-password")
+        assert res.status_code == 302  # redirect
+        assert "/home" in res.location
+
+
+class TestLogoutRoute:
+    def test_logout_route_logs_out_user(self, auth_client):
+        res = auth_client.get("/auth/logout")
+        assert res.status_code == 302
+        assert "/auth/login" in res.location
+
+
+class TestSettingsPage:
+    def test_settings_page_requires_auth(self, client):
+        res = client.get("/auth/user/settings")
+        assert res.status_code == 302
+        assert "/auth/login" in res.location
+
 
 class TestAddProductPage:
     def test_add_product_requires_auth(self, client):
         res = client.get("/items/add")
         assert res.status_code == 302
         assert "/auth/login" in res.location
+
+
+def test_demo_session(client):
+    res = client.post("/auth/demo")
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data["success"] is True
+    assert "/home" in data["redirect"]
 
 
 class TestAuthAPI:
