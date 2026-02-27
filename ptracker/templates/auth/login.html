@@ -6,11 +6,29 @@
 
   <div class="auth__form__group">
     {{ form.email.label(class="auth__form__label visually-hidden") }}
-    {{form.email(class="auth__form__input", placeholder="Email") }}
+    {% if form.email.errors %}
+    {{form.email(class="auth__form__input auth__form__input--error", placeholder="Email") }} 
+    <div class="auth__form__errors">
+      {% for error in form.email.errors %}
+      <span>{{ error }}</span>
+      {% endfor %}
+    </div>
+    {% else %}
+    {{form.email(class="auth__form__input", placeholder="Email") }} 
+    {% endif %}
   </div>
   <div class="auth__form__group">
-    {{ form.password.label(class="auth__form__label visually-hidden") }} {{
-    form.password(class="auth__form__input", placeholder="Password") }}
+    {{ form.password.label(class="auth__form__label visually-hidden") }} 
+    {% if form.password.errors %}
+    {{form.password(class="auth__form__input auth__form__input--error", placeholder="Password") }}
+    <div class="auth__form__errors">
+      {% for error in form.password.errors %}
+      <span>{{ error }}</span>
+      {% endfor %}
+    </div>
+    {% else %}
+    {{form.password(class="auth__form__input", placeholder="Password") }}
+    {% endif %}
   </div>
 
   {{ form.submit(class="auth__form__button") }}
