@@ -111,7 +111,15 @@
         </nav>
       </aside>
 
-      <main class="main">{% block content %} {% endblock %}</main>
+      <main class="main">
+        <div class="main__notifications">
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if
+          messages %} {% for category, msg in messages %}
+          <div class="alert alert-{{category}}">{{msg}}</div>
+          {% endfor %} {% endif %} {% endwith %}
+        </div>
+        {% block content %} {% endblock %}
+      </main>
     </div>
 
     <script

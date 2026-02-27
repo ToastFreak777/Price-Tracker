@@ -12,6 +12,7 @@ class TestConfig:
     SECRET_KEY = "test-secret-key"
     WTF_CSRF_ENABLED = False
     LOGIN_DISABLED = False
+    SERVER_NAME = "localhost"
 
 
 @pytest.fixture
@@ -27,6 +28,11 @@ def app():
 @pytest.fixture
 def client(app):
     return app.test_client()
+
+
+def login_client(client, email, password):
+    client.post("/auth/login", json={"email": email, "password": password})
+    return client
 
 
 @pytest.fixture
@@ -50,9 +56,18 @@ def client_with_user(client, auth_user):
 @pytest.fixture
 def auth_client(client, auth_user):
     """Client with a user logged in"""
-    # Log in via API
-    client.post(
-        "/auth/login",
-        json={"email": auth_user.email, "password": "password123"},
+    return login_client(client, auth_user.email, "password123")
+
+
+@pytest.fixture
+def auth_client_demo(client):
+    user = User(
+        username="demo_user",
+        email="demo@example.com",
+        role="demo",
+        password_hash=generate_password_hash("demo123"),
     )
-    return client
+    db.session.add(user)
+    db.session.commit()
+
+    return login_client(client, user.email, "demo123")

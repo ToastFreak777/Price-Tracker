@@ -795,6 +795,49 @@ a {
 }
 /* #endregion */
 
+/* #region Flash Messages */
+.alert {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  padding: 1rem 1.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+
+  @media (min-width: 768px) {
+    top: 20px;
+  }
+}
+
+.alert-danger {
+  background-color: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+}
+
+.alert-success {
+  background-color: #efe;
+  color: #3c3;
+  border: 1px solid #cfc;
+}
+
+.alert-info {
+  background-color: #eef;
+  color: #33c;
+  border: 1px solid #ccf;
+}
+
+.alert-warning {
+  background-color: #ffc;
+  color: #c93;
+  border: 1px solid #fec;
+}
+
+/* #endregion */
+
 /* #region Authentication */
 .auth__container {
   margin: 2rem;

@@ -41,6 +41,14 @@
         <h2 class="auth__title">Price Tracker</h2>
       </div>
 
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+        <div class="alert alert-{{category}}">{{msg}}</div>
+        {% endfor %}
+      {% endif %}
+      {% endwith %}
+
       {% block content %} {% endblock %}
     </div>
 
