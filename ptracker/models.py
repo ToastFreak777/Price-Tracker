@@ -23,9 +23,23 @@ class Item(db.Model):
     external_id = db.Column(db.String(100), nullable=False)
     url = db.Column(db.String(200), nullable=False)
 
+    name = db.Column(db.String(255), nullable=True)
+    currency = db.Column(db.String(10), nullable=True)
+    current_price = db.Column(db.Float, nullable=True)
+    image_url = db.Column(db.String(255), nullable=True)
+    in_stock = db.Column(db.Boolean, nullable=True)
+    last_fetched = db.Column(db.DateTime, nullable=True)
+
     price_history = db.relationship("PriceHistory", backref="item", lazy=True)
 
     __table_args__ = (UniqueConstraint("vendor", "external_id", name="unique_vendor_external_id"),)
+
+    def is_stale(self, max_age_hours: int = 1) -> bool:
+        if not self.last_fetched:
+            return True
+
+        age_seconds = (datetime.now(timezone.utc) - self.last_fetched).total_seconds()
+        return age_seconds > max_age_hours * 3600
 
     def __repr__(self):
         return f"Item('{self.vendor}', '{self.url}', '{self.external_id}')"
