@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, g, render_template, redirect, url_for, flash
 from flask_login import current_user, login_user, logout_user, login_required
-from werkzeug.exceptions import Conflict, Unauthorized, Forbidden
+from werkzeug.exceptions import Conflict, Unauthorized
 
 from ptracker.auth.forms import LoginForm, RegistrationForm
 
