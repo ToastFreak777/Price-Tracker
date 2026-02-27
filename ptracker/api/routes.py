@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify, g
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.exceptions import Conflict, Unauthorized, Forbidden
 
-
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 

@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request
 from flask_login import current_user, login_required
 from ptracker.price_tracking.service import PriceTrackerService
 
-
 main_bp = Blueprint("main", __name__)
 
 product = {"name": "Sony WH-1000XM4", "price": 299.99, "price_drop": 8.0}
