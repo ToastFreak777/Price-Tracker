@@ -1,4 +1,4 @@
-from sqlalchemy import UniqueConstraint
+from sqlalchemy import UniqueConstraint, Enum
 from ptracker.extensions import db
 from datetime import datetime, timezone
 from flask_login import UserMixin
@@ -9,7 +9,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(25), nullable=False, default="user")
+    role = db.Column(Enum("user", "demo", "admin", name="user_role"), nullable=False, default="user")
 
     tracked_items = db.relationship("UserItem", backref="user", lazy=True)
 
