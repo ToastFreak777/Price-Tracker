@@ -27,29 +27,6 @@ def notifications_page():
     return render_template("product/alerts.html", title="Alerts", current_path=request.path, products=products)
 
 
-@price_bp.route("", methods=["GET"])
-@login_required
-def get_items():
-    """Get all items user is tracking"""
-
-    results = g.price_service.get_items(current_user.id)
-    serialized_items = [
-        {
-            "user_item_id": ui.id,
-            "target_price": ui.target_price,
-            "item": {
-                "id": ui.item.id,
-                "vendor": ui.item.vendor,
-                "external_id": ui.item.external_id,
-                "url": ui.item.url,
-            },
-        }
-        for ui in results
-    ]
-
-    return jsonify({"success": True, "data": serialized_items}), 200
-
-
 @price_bp.route("", methods=["POST"])
 @login_required
 def track_item():

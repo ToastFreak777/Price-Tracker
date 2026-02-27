@@ -88,12 +88,6 @@ class PriceTrackerService:
             "price_history": history,
         }
 
-    def get_user_tracked_items(self, user_id: int) -> list[UserItem]:
-        user = db.session.get(User, user_id)
-        if not user:
-            raise NotFound(f"No user with id: {user_id}")
-        return user.tracked_items
-
     def remove_item(self, user_id: int, item_id: int):
         user_item = UserItem.query.filter_by(user_id=user_id, item_id=item_id).first()
         if not user_item:

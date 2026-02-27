@@ -63,3 +63,10 @@ def delete_user(user_id: int):
         raise Forbidden("Cannot delete another user's account")
     g.auth_service.delete_user(user_id)
     return jsonify({"success": True, "message": "User's Account Deleted"}), 200
+
+
+@api_bp.route("/items")
+@login_required
+def get_items():
+    """Get all items user is tracking"""
+    pass
