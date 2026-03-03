@@ -87,5 +87,5 @@ def test_check_price_update_changes_price(app, mocker):
         )
 
         service = PriceTrackerService()
-        service.check_price_update(item.id)
+        service.check_price_and_update(item.id)
         assert PriceHistory.query.filter_by(item_id=item.id).count() == 2
