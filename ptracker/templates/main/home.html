@@ -83,7 +83,7 @@
   {% else %}
   <div class="home__cards">
     {% for product in products %}
-    <a href="{{product.item.url}}" target="_blank" class="home__card">
+    <a href="/items/{{product.item.id}}" class="home__card">
       <div class="home__card-details">
         {% if product.item.name|length > 25 %}
         <h3>{{ product.item.name[:25] }}...</h3>

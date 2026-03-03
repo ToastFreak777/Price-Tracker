@@ -151,3 +151,10 @@ class PriceTrackerService:
             )
 
         return result
+
+    def get_user_item(self, user_id: int, item_id: int):
+        user_item = db.session.query(UserItem).filter_by(user_id=user_id, item_id=item_id).first()
+        if not user_item:
+            raise NotFound("Item not found in user's tracked list")
+
+        return user_item

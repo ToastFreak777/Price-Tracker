@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, g, render_template, redirect, url_for
 from flask_login import current_user, login_required
 
-from ptracker.price_tracking.forms import TrackProductForm
+from ptracker.price_tracking.forms import TrackProductForm, ItemDetailsForm
 
 price_bp = Blueprint("price", __name__, url_prefix="/items")
 
@@ -48,47 +48,35 @@ def track_item():
     )
 
 
-@price_bp.route("/<int:item_id>", methods=["GET"])
+@price_bp.route("/<int:item_id>")
 @login_required
 def get_item(item_id):
-    result = g.price_service.get_item(item_id)
+    user_item = g.price_service.get_user_item(current_user.id, item_id)
 
-    item = result["item"]
-    last_fetched_iso = None
-    if item.last_fetched:
-        last_fetched_iso = item.last_fetched.isoformat()
+    item = user_item.item
+    # last_fetched_iso = None
+    # if item.last_fetched:
+    #     last_fetched_iso = item.last_fetched.isoformat()
 
     serialized_history = [
         {
             "price": h.price,
-            "timestamp": h.timestamp.isoformat(),
+            "timestamp": h.timestamp.strftime("%b %d, %Y"),
         }
-        for h in result["price_history"]
+        for h in item.price_history
     ]
 
-    return (
-        jsonify(
-            {
-                "success": True,
-                "data": {
-                    "id": item_id,
-                    "item": {
-                        "id": item.id,
-                        "vendor": item.vendor,
-                        "external_id": item.external_id,
-                        "url": item.url,
-                        "name": item.name,
-                        "currency": item.currency,
-                        "current_price": item.current_price,
-                        "image_url": item.image_url,
-                        "in_stock": item.in_stock,
-                        "last_fetched": last_fetched_iso,
-                    },
-                    "price_history": serialized_history,
-                },
-            }
-        ),
-        200,
+    form = ItemDetailsForm()
+
+    return render_template(
+        "product/product_details.html",
+        title=item.name,
+        current_path=request.path,
+        item=item,
+        target_price=user_item.target_price,
+        # last_fetched=last_fetched_iso,
+        price_history=serialized_history,
+        form=form,
     )
 
 

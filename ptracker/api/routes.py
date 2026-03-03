@@ -65,6 +65,50 @@ def delete_user(user_id: int):
     return jsonify({"success": True, "message": "User's Account Deleted"}), 200
 
 
+@api_bp.route("/items/<int:item_id>")
+@login_required
+def get_item(item_id):
+    result = g.price_service.get_item(item_id)
+
+    item = result["item"]
+    last_fetched_iso = None
+    if item.last_fetched:
+        last_fetched_iso = item.last_fetched.isoformat()
+
+    serialized_history = [
+        {
+            "price": h.price,
+            "timestamp": h.timestamp.isoformat(),
+        }
+        for h in result["price_history"]
+    ]
+
+    return (
+        jsonify(
+            {
+                "success": True,
+                "data": {
+                    "id": item_id,
+                    "item": {
+                        "id": item.id,
+                        "vendor": item.vendor,
+                        "external_id": item.external_id,
+                        "url": item.url,
+                        "name": item.name,
+                        "currency": item.currency,
+                        "current_price": item.current_price,
+                        "image_url": item.image_url,
+                        "in_stock": item.in_stock,
+                        "last_fetched": last_fetched_iso,
+                    },
+                    "price_history": serialized_history,
+                },
+            }
+        ),
+        200,
+    )
+
+
 @api_bp.route("/items")
 @login_required
 def get_items():

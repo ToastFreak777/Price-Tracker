@@ -1,1 +1,66 @@
-<!-- TODO create the product details template -->
+{% extends 'layout.html' %} {% block content %}
+<div class="item">
+  <h1 class="item__title">{{ item.name }}</h1>
+
+  <div class="item__container">
+    <form class="item__details" method="POST">
+      {{ form.hidden_tag() }}
+
+      <a href="{{item.url}}" target="_blank" class="item__details__link">
+        <img src="{{item.image_url}}" alt="product image" class="item__image" />
+      </a>
+      <button
+        type="button"
+        class="item__details__button item__details__button-untrack"
+      >
+        Stop Tracking
+      </button>
+      {{form.alert_price.label(class="item__details__label")}}
+      <div class="item__details__controls">
+        {{ form.alert_price(class="item__details__input", value=target_price) }}
+        {{ form.submit(class="item__details__button
+        item__details__button-submit") }}
+      </div>
+    </form>
+    <div class="item__price-history-graph">
+      <p class="item__price-history-graph__price-label">Current Price</p>
+      <p class="item__price-history-graph__current-price">
+        {{ item.current_price }}
+      </p>
+      <span class="item__price-history-graph__price-drop">- 8%</span>
+      <div class="item__price-history-graph__image">
+        <canvas id="priceChart"></canvas>
+      </div>
+    </div>
+    <div class="item__price-history-table">
+      <p class="item__price-history-table-header">Price History</p>
+      <p class="item__price-history-table-header">Price</p>
+      {% for i in range(5) %} {% for record in price_history %}
+      <p class="item__price-history-record-date">{{ record.timestamp }}</p>
+      <p class="item__price-history-record-price">{{ record.price }}</p>
+      {% endfor %} {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById("priceChart");
+  const priceHistory = {{ price_history | tojson }};
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: priceHistory.map(p => p.timestamp),
+      datasets: [
+        {
+          label: "Price",
+          data: priceHistory.map(p => p.price),
+          tension: 0.4,
+        },
+      ],
+    },
+  });
+</script>
+{% endblock content %}
