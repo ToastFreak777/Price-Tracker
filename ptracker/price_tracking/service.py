@@ -115,6 +115,21 @@ class PriceTrackerService:
 
         self._update_item_price(item)
 
+    def _check_price_drop_and_notify(self, user_item: UserItem) -> float | None:
+        item = user_item.item
+        prev_price = (
+            PriceHistory.query.filter_by(item_id=item.id).order_by(PriceHistory.timestamp.desc()).offset(1).first()
+        )
+        price_drop = None
+        if prev_price and prev_price.price != 0:
+            price_drop = ((prev_price.price - item.current_price) / prev_price.price) * 100
+            if price_drop > 0 and item.current_price <= user_item.target_price:
+                print(
+                    f"Notify user {user_item.user_id}: Price dropped for {item.name}! Current: {item.current_price}, Target: {user_item.target_price}"
+                )
+
+        return price_drop
+
     def get_user_tracked_items(self, user_id: int, refresh_stale: bool = True):
         """Get user's tracked items with full details, optionally refreshing stale data"""
         user = db.session.get(User, user_id)
@@ -131,12 +146,7 @@ class PriceTrackerService:
                 except Exception as e:
                     print(f"Error refreshing item {item.id}: {e}")
 
-            prev_price = (
-                PriceHistory.query.filter_by(item_id=item.id).order_by(PriceHistory.timestamp.desc()).offset(1).first()
-            )
-            price_drop = None
-            if prev_price and prev_price.price != 0:
-                price_drop = ((prev_price.price - item.current_price) / prev_price.price) * 100
+            price_drop = self._check_price_drop_and_notify(user_item)
 
             result.append(
                 {
@@ -154,4 +164,18 @@ class PriceTrackerService:
         if not user_item:
             raise NotFound("Item not found in user's tracked list")
 
-        return user_item
+        price_drop = self._check_price_drop_and_notify(user_item)
+
+        return {
+            "item": user_item.item,
+            "target_price": user_item.target_price,
+            "price_drop": price_drop,
+        }
+
+    def update_item_target_price(self, user_id: int, item_id: int, target_price: float):
+        user_item = db.session.query(UserItem).filter_by(user_id=user_id, item_id=item_id).first()
+        if not user_item:
+            raise NotFound("Item not found in user's tracked list")
+
+        user_item.target_price = target_price
+        db.session.commit()

@@ -27,7 +27,11 @@
       <p class="item__price-history-graph__current-price">
         {{ item.current_price }}
       </p>
-      <span class="item__price-history-graph__price-drop">- 8%</span>
+      {% if price_drop is not none %}
+      <span class="item__price-history-graph__price-drop">
+        - {{ price_drop }}%</span
+      >
+      {% endif %}
       <div class="item__price-history-graph__image">
         <canvas id="priceChart"></canvas>
       </div>

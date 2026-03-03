@@ -49,12 +49,14 @@ def track_item():
     )
 
 
-@price_bp.route("/<int:item_id>")
+@price_bp.route("/<int:item_id>", methods=["GET", "POST"])
 @login_required
 def get_item(item_id):
-    user_item = g.price_service.get_user_item(current_user.id, item_id)
+    data = g.price_service.get_user_item(current_user.id, item_id)
+    item = data["item"]
+    target_price = data["target_price"]
+    price_drop = data["price_drop"]
 
-    item = user_item.item
     # last_fetched_iso = None
     # if item.last_fetched:
     #     last_fetched_iso = item.last_fetched.isoformat()
@@ -69,13 +71,16 @@ def get_item(item_id):
 
     form = ItemDetailsForm()
 
+    if form.validate_on_submit():
+        g.price_service.update_item_target_price(current_user.id, item_id, form.alert_price.data)
+
     return render_template(
         "product/product_details.html",
         title=item.name,
         current_path=request.path,
         item=item,
-        target_price=user_item.target_price,
-        # last_fetched=last_fetched_iso,
+        target_price=target_price,
+        price_drop=price_drop,
         price_history=serialized_history,
         form=form,
     )
