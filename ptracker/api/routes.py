@@ -114,3 +114,10 @@ def get_item(item_id):
 def get_items():
     """Get all items user is tracking"""
     pass
+
+
+@api_bp.route("/update-items")
+def update_all_items():
+    """Endpoint to trigger manual update of all tracked items. In production, this would be handled by a scheduled background job."""
+    g.price_service.update_all_tracked_items()
+    return jsonify({"success": True, "message": "All items updated"}), 200

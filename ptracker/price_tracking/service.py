@@ -3,6 +3,8 @@ from ptracker.models import User, Item, UserItem, PriceHistory
 from ptracker.extensions import db
 from werkzeug.exceptions import NotFound
 
+from datetime import datetime, timezone
+
 
 class PriceTrackerService:
 
@@ -55,31 +57,10 @@ class PriceTrackerService:
         source = DataSourceFactory.get(item.vendor)
         return source.fetch_from_url(item.url)
 
-    def _update_item_cache(self, item: Item, snapshot: ProductSnapshot):
-        from datetime import datetime, timezone
-
-        item.name = snapshot.name
-        item.image_url = snapshot.image_url
-        item.currency = snapshot.currency
-        item.current_price = snapshot.price
-        item.in_stock = snapshot.in_stock
-        item.last_fetched = datetime.now(timezone.utc)
-
     def get_item(self, item_id: int):
         item = db.session.get(Item, item_id)
         if not item:
             raise NotFound(f"No item with id: {item_id}")
-
-        # Only fetch live data if cache is stale
-        if item.is_stale(max_age_hours=1):
-            snapshot = self._fetch_live_snapshot(item)
-            old_price = item.current_price
-            self._update_item_cache(item, snapshot)
-
-            if old_price != snapshot.price:
-                db.session.add(PriceHistory(item_id=item.id, price=snapshot.price))
-
-            db.session.commit()
 
         history = PriceHistory.query.filter_by(item_id=item_id).order_by(PriceHistory.timestamp.desc()).all()
 
@@ -97,15 +78,23 @@ class PriceTrackerService:
         db.session.commit()
 
     def _update_item_price(self, item: Item):
-        """Core logic for fetching and updating item price."""
-        snapshot = self._fetch_live_snapshot(item)
-        old_price = item.current_price
-        self._update_item_cache(item, snapshot)
+        """Core logic for fetching and updating item price once per day.
 
-        if old_price != snapshot.price:
+        Fetches if stale (24+ hours since last fetch) and records unrecorded price changes.
+        Always adds a daily price history snapshot for tracking.
+        Commits changes.
+        """
+        if item.is_stale(max_age_hours=24):
+            snapshot = self._fetch_live_snapshot(item)
+            item.name = snapshot.name
+            item.image_url = snapshot.image_url
+            item.currency = snapshot.currency
+            item.current_price = snapshot.price
+            item.in_stock = snapshot.in_stock
+            item.last_fetched = datetime.now(timezone.utc)
+
             db.session.add(PriceHistory(item_id=item.id, price=snapshot.price))
-
-        db.session.commit()
+            db.session.commit()
 
     def check_price_and_update(self, item_id: int):
         """Public method to check and update price by item_id."""
@@ -179,3 +168,12 @@ class PriceTrackerService:
 
         user_item.target_price = target_price
         db.session.commit()
+
+    def update_all_tracked_items(self):
+        """Utility method to update all tracked items. In production, this would be run as a scheduled background job."""
+        items = db.session.query(Item).join(UserItem).distinct().all()
+        for item in items:
+            try:
+                self._update_item_price(item)
+            except Exception as e:
+                print(f"Error updating item {item.id}: {e}")

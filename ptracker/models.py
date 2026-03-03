@@ -34,7 +34,7 @@ class Item(db.Model):
 
     __table_args__ = (UniqueConstraint("vendor", "external_id", name="unique_vendor_external_id"),)
 
-    def is_stale(self, max_age_hours: int = 1) -> bool:
+    def is_stale(self, max_age_hours: int = 24) -> bool:
         if not self.last_fetched:
             return True
 

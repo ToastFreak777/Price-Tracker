@@ -39,10 +39,10 @@
     <div class="item__price-history-table">
       <p class="item__price-history-table-header">Price History</p>
       <p class="item__price-history-table-header">Price</p>
-      {% for i in range(5) %} {% for record in price_history %}
+      {% for record in price_history %}
       <p class="item__price-history-record-date">{{ record.timestamp }}</p>
       <p class="item__price-history-record-price">{{ record.price }}</p>
-      {% endfor %} {% endfor %}
+      {% endfor %}
     </div>
   </div>
 </div>
