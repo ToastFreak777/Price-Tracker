@@ -2,11 +2,9 @@ from flask import Blueprint, request, jsonify, g, render_template, redirect, url
 from flask_login import current_user, login_required
 
 from ptracker.price_tracking.forms import TrackProductForm, ItemDetailsForm
+from ptracker.price_tracking.service import PriceTrackerService
 
 price_bp = Blueprint("price", __name__, url_prefix="/items")
-
-product = {"name": "Sony WH-1000XM4", "price": 299.99, "price_drop": 8.0}
-products = [product for _ in range(7)]
 
 
 @price_bp.route("/add", methods=["GET", "POST"])
@@ -24,6 +22,9 @@ def add_product_page():
 
 @price_bp.route("/alerts")
 def notifications_page():
+    service = PriceTrackerService()
+    products = service.get_user_tracked_items(current_user.id, refresh_stale=False)
+
     return render_template("product/alerts.html", title="Alerts", current_path=request.path, products=products)
 
 

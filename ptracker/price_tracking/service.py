@@ -96,11 +96,8 @@ class PriceTrackerService:
         db.session.delete(user_item)
         db.session.commit()
 
-    def check_price_update(self, item_id: int):
-        item = db.session.get(Item, item_id)
-        if not item:
-            raise NotFound(f"No item with id: {item_id}")
-
+    def _update_item_price(self, item: Item):
+        """Core logic for fetching and updating item price."""
         snapshot = self._fetch_live_snapshot(item)
         old_price = item.current_price
         self._update_item_cache(item, snapshot)
@@ -109,6 +106,14 @@ class PriceTrackerService:
             db.session.add(PriceHistory(item_id=item.id, price=snapshot.price))
 
         db.session.commit()
+
+    def check_price_and_update(self, item_id: int):
+        """Public method to check and update price by item_id."""
+        item = db.session.get(Item, item_id)
+        if not item:
+            raise NotFound(f"No item with id: {item_id}")
+
+        self._update_item_price(item)
 
     def get_user_tracked_items(self, user_id: int, refresh_stale: bool = True):
         """Get user's tracked items with full details, optionally refreshing stale data"""
@@ -122,15 +127,7 @@ class PriceTrackerService:
 
             if refresh_stale and item.is_stale(max_age_hours=1):
                 try:
-                    snapshot = self._fetch_live_snapshot(item)
-                    old_price = item.current_price
-                    self._update_item_cache(item, snapshot)
-
-                    # Update price history if price changed
-                    if old_price != snapshot.price:
-                        db.session.add(PriceHistory(item_id=item.id, price=snapshot.price))
-
-                    db.session.commit()
+                    self._update_item_price(item)
                 except Exception as e:
                     print(f"Error refreshing item {item.id}: {e}")
 
@@ -144,7 +141,7 @@ class PriceTrackerService:
             result.append(
                 {
                     "item": item,
-                    "user_item": user_item,
+                    "target_price": user_item.target_price,
                     "current_price": item.current_price,
                     "price_drop": price_drop,
                 }

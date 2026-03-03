@@ -464,6 +464,7 @@ a {
   border-radius: var(--radius);
 
   font-weight: bold;
+  color: white;
   cursor: pointer;
 }
 
@@ -620,6 +621,7 @@ a {
   background: var(--color-bg-accent);
   border: none;
   font-weight: bold;
+  color: white;
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
 
@@ -658,7 +660,6 @@ a {
 
   @media (min-width: 768px) {
     gap: 0;
-    /* grid-template-columns: repeat(5, 1fr); */
   }
 }
 
@@ -1091,7 +1092,7 @@ a {
 }
 
 .auth__form__button {
-  color: var(--color-text);
+  color: white;
   background: var(--color-bg-accent);
   border: none;
   padding-block: 0.35rem;
@@ -1123,7 +1124,7 @@ a {
   top: 1rem;
   right: 1rem;
   background: var(--color-bg-accent);
-  color: var(--color-text);
+  color: white;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;

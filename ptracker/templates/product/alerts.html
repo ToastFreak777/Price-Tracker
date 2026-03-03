@@ -99,12 +99,12 @@
       <p class="alerts__rule-header">Actions</p>
       <p class="alerts__actions-header">Edit/Delete</p>
     </div>
-    {% for product in products[:3] %}
+    {% for product in products %}
     <div class="alerts__item">
       <div class="alerts__vendor">
         <p class="alerts__vendor-icon">
           <i class="fa-brands fa-amazon"></i>
-          <span class="alerts__vendor-name">Amazon</span>
+          <span class="alerts__vendor-name">{{product.item.vendor}}</span>
         </p>
       </div>
       <label class="alerts__slider" for="slider-toggle-{{loop.index}}">
@@ -116,19 +116,17 @@
         />
         <span class="alerts__track"></span>
       </label>
-      <p class="alerts__product-name">{{ product.name }}</p>
-      <span class="alerts__target-price"
-        >Target Price: {{ product.target_price }} $250.00</span
-      >
+      <p class="alerts__product-name">{{ product.item.name }}</p>
+      <span class="alerts__target-price">${{ product.target_price }}</span>
       <p class="alerts__percentage-change">
         Notify me when price drops
         <span class="alerts__percentage">10%</span>
       </p>
       <div class="alerts__controls">
-        <a href="/" class="alerts__edit">
+        <a href="/items/{{ product.item.id }}" class="alerts__edit">
           <i class="fa-solid fa-pencil"></i>
         </a>
-        <!-- TODO change this from link so it doesn't refresh the page on delete -->
+        <!-- TODO delete functionality -->
         <a href="/items/alerts" class="alerts__delete">
           <i class="fa-solid fa-trash"></i>
         </a>

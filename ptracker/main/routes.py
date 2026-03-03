@@ -4,9 +4,6 @@ from ptracker.price_tracking.service import PriceTrackerService
 
 main_bp = Blueprint("main", __name__)
 
-product = {"name": "Sony WH-1000XM4", "price": 299.99, "price_drop": 8.0}
-products = [product for _ in range(7)]
-
 
 @main_bp.route("/")
 @main_bp.route("/home")
