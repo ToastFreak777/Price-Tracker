@@ -57,4 +57,18 @@ document.addEventListener("DOMContentLoaded", () => {
   app.initTheme();
   app.initSidebar();
   app.initDemo();
+
+  document.querySelectorAll(".alert").forEach((alert) => {
+    setTimeout(() => {
+      alert.classList.add("alert-fade");
+
+      alert.addEventListener(
+        "transitionend",
+        () => {
+          alert.remove();
+        },
+        { once: true },
+      );
+    }, 4000);
+  });
 });

@@ -808,6 +808,8 @@ a {
   font-size: 0.875rem;
   font-weight: bold;
 
+  transition: opacity 0.5s ease-out;
+
   @media (min-width: 768px) {
     top: 20px;
   }
@@ -835,6 +837,10 @@ a {
   background-color: #ffc;
   color: #c93;
   border: 1px solid #fec;
+}
+
+.alert-fade {
+  opacity: 0;
 }
 
 /* #endregion */
