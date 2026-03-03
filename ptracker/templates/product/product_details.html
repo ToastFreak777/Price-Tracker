@@ -27,11 +27,16 @@
       <p class="item__price-history-graph__current-price">
         {{ item.current_price }}
       </p>
-      {% if price_drop is not none %}
-      <span class="item__price-history-graph__price-drop">
-        - {{ price_drop }}%</span
+      {% if price_change is not none %} {% if price_change > 0 %}
+      <span class="item__price-history-graph__price-change-negative">
+        +{{ price_change }}%</span
       >
-      {% endif %}
+      {% else %}
+      <span class="item__price-history-graph__price-change-positive">
+        {{ price_change }}%</span
+      >
+      {% endif %} {% endif %}
+
       <div class="item__price-history-graph__image">
         <canvas id="priceChart"></canvas>
       </div>

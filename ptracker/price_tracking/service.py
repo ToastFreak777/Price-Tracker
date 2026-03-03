@@ -104,20 +104,25 @@ class PriceTrackerService:
 
         self._update_item_price(item)
 
-    def _check_price_drop_and_notify(self, user_item: UserItem) -> float | None:
+    def _check_price_change_and_notify(self, user_item: UserItem) -> float | None:
         item = user_item.item
         prev_price = (
             PriceHistory.query.filter_by(item_id=item.id).order_by(PriceHistory.timestamp.desc()).offset(1).first()
         )
-        price_drop = None
-        if prev_price and prev_price.price != 0:
-            price_drop = ((prev_price.price - item.current_price) / prev_price.price) * 100
-            if price_drop > 0 and item.current_price <= user_item.target_price:
-                print(
-                    f"Notify user {user_item.user_id}: Price dropped for {item.name}! Current: {item.current_price}, Target: {user_item.target_price}"
-                )
+        if not prev_price or not prev_price.price:
+            return None
 
-        return price_drop
+        price_change = round(((item.current_price - prev_price.price) / prev_price.price) * 100, 2)
+
+        if price_change < 0 and item.current_price <= user_item.target_price:
+            print(
+                f"Notify user {user_item.user_id}: "
+                f"Price dropped for {item.name}! "
+                f"Current: {item.current_price}, "
+                f"Target: {user_item.target_price}"
+            )
+
+        return price_change
 
     def get_user_tracked_items(self, user_id: int, refresh_stale: bool = True):
         """Get user's tracked items with full details, optionally refreshing stale data"""
@@ -135,14 +140,14 @@ class PriceTrackerService:
                 except Exception as e:
                     print(f"Error refreshing item {item.id}: {e}")
 
-            price_drop = self._check_price_drop_and_notify(user_item)
+            price_change = self._check_price_change_and_notify(user_item)
 
             result.append(
                 {
                     "item": item,
                     "target_price": user_item.target_price,
                     "current_price": item.current_price,
-                    "price_drop": price_drop,
+                    "price_change": price_change,
                 }
             )
 
@@ -153,12 +158,12 @@ class PriceTrackerService:
         if not user_item:
             raise NotFound("Item not found in user's tracked list")
 
-        price_drop = self._check_price_drop_and_notify(user_item)
+        price_change = self._check_price_change_and_notify(user_item)
 
         return {
             "item": user_item.item,
             "target_price": user_item.target_price,
-            "price_drop": price_drop,
+            "price_change": price_change,
         }
 
     def update_item_target_price(self, user_id: int, item_id: int, target_price: float):
@@ -170,7 +175,9 @@ class PriceTrackerService:
         db.session.commit()
 
     def update_all_tracked_items(self):
-        """Utility method to update all tracked items. In production, this would be run as a scheduled background job."""
+        """Utility method to update all tracked items.
+        In production, this would be run as a scheduled background job.
+        """
         items = db.session.query(Item).join(UserItem).distinct().all()
         for item in items:
             try:

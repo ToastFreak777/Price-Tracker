@@ -380,15 +380,21 @@ a {
   p {
     font-size: 1.5em;
   }
+}
 
-  span {
-    width: fit-content;
+.home__card__badge {
+  width: fit-content;
 
-    background-color: green;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-  }
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.home__card__badge-danger {
+  background-color: red;
+}
+.home__card__badge-success {
+  background-color: green;
 }
 
 .home__card-image {
@@ -529,13 +535,20 @@ a {
   font-weight: bold;
 }
 
-.item__price-history-graph__price-drop {
+.item__price-history-graph__price-change-positive,
+.item__price-history-graph__price-change-negative {
   width: fit-content;
-
-  background-color: green;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
+}
+
+.item__price-history-graph__price-change-positive {
+  background-color: green;
+}
+
+.item__price-history-graph__price-change-negative {
+  background-color: red;
 }
 
 .item__price-history-graph__image {

@@ -55,7 +55,7 @@ def get_item(item_id):
     data = g.price_service.get_user_item(current_user.id, item_id)
     item = data["item"]
     target_price = data["target_price"]
-    price_drop = data["price_drop"]
+    price_change = data["price_change"]
 
     # last_fetched_iso = None
     # if item.last_fetched:
@@ -80,7 +80,7 @@ def get_item(item_id):
         current_path=request.path,
         item=item,
         target_price=target_price,
-        price_drop=price_drop,
+        price_change=price_change,
         price_history=serialized_history,
         form=form,
     )
