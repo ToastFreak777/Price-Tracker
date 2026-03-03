@@ -102,7 +102,7 @@ class TestRegisterPage:
 
         assert b"Username or email already exists" in res.data
 
-    def test_register_form_submission_duplicate_email(self, client, auth_user):
+    def test_register_form_submission_duplicate_username(self, client, auth_user):
         res = client.post(
             "/auth/register",
             data={
