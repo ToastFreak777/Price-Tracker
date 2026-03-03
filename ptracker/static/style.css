@@ -473,6 +473,7 @@ a {
   width: 75%;
   margin: auto;
   padding-block: 0.625rem;
+  background: #e74c3c;
 }
 
 .item__details__button-submit {
@@ -499,7 +500,10 @@ a {
 }
 
 .item__details__input {
-  background: inherit;
+  padding-block: 0.5rem;
+  padding-inline: 1rem 0;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius);
   border: none;
   outline: none;
 }
