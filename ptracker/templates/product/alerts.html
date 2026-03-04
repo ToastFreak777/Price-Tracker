@@ -127,9 +127,13 @@
           <i class="fa-solid fa-pencil"></i>
         </a>
         <!-- TODO delete functionality -->
-        <a href="/items/alerts" class="alerts__delete">
-          <i class="fa-solid fa-trash"></i>
-        </a>
+        <form method="POST">
+          {{ form.csrf_token }}
+          {{ form.item_id(value=product.item.id) }}
+          <button type="submit" class="alerts__delete">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </form>
       </div>
     </div>
     {% endfor %}

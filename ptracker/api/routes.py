@@ -109,6 +109,14 @@ def get_item(item_id):
     )
 
 
+@api_bp.route("/items/<int:item_id>", methods=["DELETE"])
+@login_required
+def untrack_item(item_id):
+    g.price_service.remove_item(current_user.id, item_id)
+
+    return jsonify({"success": True, "message": f"Item {item_id} untracked"}), 200
+
+
 @api_bp.route("/items")
 @login_required
 def get_items():

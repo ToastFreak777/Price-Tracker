@@ -818,6 +818,12 @@ a {
   color: var(--color-bg-accent);
 }
 
+.alerts__delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
 .alerts__delete .fa-trash {
   color: #e74c3c;
 }

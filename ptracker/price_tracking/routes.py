@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, g, render_template, redirect, url_for
 from flask_login import current_user, login_required
 
-from ptracker.price_tracking.forms import TrackProductForm, ItemDetailsForm
+from ptracker.price_tracking.forms import TrackProductForm, ItemDetailsForm, DeleteItemForm
 from ptracker.price_tracking.service import PriceTrackerService
 
 price_bp = Blueprint("price", __name__, url_prefix="/items")
@@ -21,12 +21,19 @@ def add_product_page():
     return render_template("product/add_product.html", title="Add Product", current_path=request.path, form=form)
 
 
-@price_bp.route("/alerts")
+@price_bp.route("/alerts", methods=["GET", "POST"])
 def notifications_page():
+    form = DeleteItemForm()
+
+    if form.validate_on_submit():
+        g.price_service.remove_item(current_user.id, form.item_id.data)
+
     service = PriceTrackerService()
     products = service.get_user_tracked_items(current_user.id, refresh_stale=False)
 
-    return render_template("product/alerts.html", title="Alerts", current_path=request.path, products=products)
+    return render_template(
+        "product/alerts.html", title="Alerts", current_path=request.path, products=products, form=form
+    )
 
 
 @price_bp.route("", methods=["POST"])
@@ -54,6 +61,11 @@ def track_item():
 @login_required
 def get_item(item_id):
     form = ItemDetailsForm()
+    delete_form = DeleteItemForm()
+
+    if delete_form.validate_on_submit():
+        g.price_service.remove_item(current_user.id, item_id)
+        return redirect(url_for("main.home_page"))
 
     if form.validate_on_submit():
         g.price_service.update_item_target_price(current_user.id, item_id, form.alert_price.data)
@@ -80,12 +92,5 @@ def get_item(item_id):
         price_change=price_change,
         price_history=serialized_history,
         form=form,
+        delete_form=delete_form,
     )
-
-
-@price_bp.route("/<int:item_id>", methods=["DELETE"])
-@login_required
-def untrack_item(item_id):
-
-    g.price_service.remove_item(current_user.id, item_id)
-    return jsonify({"message": f"Item {item_id} untracked"}), 200
