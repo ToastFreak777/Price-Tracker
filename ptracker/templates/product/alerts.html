@@ -102,9 +102,12 @@
     {% for product in products %}
     <div class="alerts__item">
       <div class="alerts__vendor">
-        <p class="alerts__vendor-icon">
+        <p class="alerts__vendor-icons">
+          {% if product.item.vendor == 'amazon' %}
           <i class="fa-brands fa-amazon"></i>
-          <span class="alerts__vendor-name">{{product.item.vendor}}</span>
+          {% elif product.item.vendor == 'ebay' %}
+          <i class="fa-brands fa-ebay"></i>
+          {% endif %}
         </p>
       </div>
       <label class="alerts__slider" for="slider-toggle-{{loop.index}}">
@@ -128,8 +131,7 @@
         </a>
         <!-- TODO delete functionality -->
         <form method="POST">
-          {{ form.csrf_token }}
-          {{ form.item_id(value=product.item.id) }}
+          {{ form.csrf_token }} {{ form.item_id(value=product.item.id) }}
           <button type="submit" class="alerts__delete">
             <i class="fa-solid fa-trash"></i>
           </button>
