@@ -13,7 +13,8 @@ def add_product_page():
     form = TrackProductForm()
 
     if form.validate_on_submit():
-        target_price = 500  # Placeholder until I add this to the form
+        # TODO: add target price field to form
+        target_price = 0
         g.price_service.track_item(form.product_url.data, current_user.id, target_price)
         return redirect(url_for("main.home_page"))
 
@@ -52,14 +53,15 @@ def track_item():
 @price_bp.route("/<int:item_id>", methods=["GET", "POST"])
 @login_required
 def get_item(item_id):
+    form = ItemDetailsForm()
+
+    if form.validate_on_submit():
+        g.price_service.update_item_target_price(current_user.id, item_id, form.alert_price.data)
+
     data = g.price_service.get_user_item(current_user.id, item_id)
     item = data["item"]
     target_price = data["target_price"]
     price_change = data["price_change"]
-
-    # last_fetched_iso = None
-    # if item.last_fetched:
-    #     last_fetched_iso = item.last_fetched.isoformat()
 
     serialized_history = [
         {
@@ -68,11 +70,6 @@ def get_item(item_id):
         }
         for h in item.price_history
     ]
-
-    form = ItemDetailsForm()
-
-    if form.validate_on_submit():
-        g.price_service.update_item_target_price(current_user.id, item_id, form.alert_price.data)
 
     return render_template(
         "product/product_details.html",
@@ -92,9 +89,3 @@ def untrack_item(item_id):
 
     g.price_service.remove_item(current_user.id, item_id)
     return jsonify({"message": f"Item {item_id} untracked"}), 200
-
-
-# Redundant with get_item for now, may be useful if I add query parameters later
-# @main.route("/items/<int:item_id>/history", methods=["GET"])
-# def get_price_history(item_id):
-#     return f"<h1>Price history for item {item_id}</h1>"
