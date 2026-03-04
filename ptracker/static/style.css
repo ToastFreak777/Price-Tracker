@@ -85,6 +85,13 @@ a {
   height: 100%;
 }
 
+.header__menu-toggle {
+  @media (min-width: 768px) {
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
 .header__menu-toggle .fa-bars,
 .header__menu-toggle .fa-close,
 .header__menu-toggle .fa-circle-chevron-down {
