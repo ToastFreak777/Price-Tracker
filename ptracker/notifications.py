@@ -1,4 +1,5 @@
-import smtplib, ssl
+import smtplib
+import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -28,26 +29,24 @@ class EmailService:
             message["From"] = f"Price Tracker <{self.app_email}>"
             message["To"] = receiver
 
-            text = (
-                text_body
-                or """\
+            text = text_body or """\
             Hi there,
             One of your tracked items has dropped below your target price. Log in to your account to check it out!
             """
-            )
 
-            html = (
-                html_body
-                or """\
+            html = html_body or """\
             <html>
                 <body>
-                    <p style="font-family: Arial, sans-serif;">Hi there,<br><br>
-                    <strong>One of your tracked items has dropped below your target price.</strong><br>Log in to your account to check it out!
+                    <p style="font-family: Arial, sans-serif;">
+                    Hi there,<br><br>
+                    <strong>
+                        One of your tracked items has dropped below your target price.
+                    </strong><br>
+                    Log in to your account to check it out!
                     </p>
                 </body>
             </html>
             """
-            )
 
             part1 = MIMEText(text, "plain")
             part2 = MIMEText(html, "html")
