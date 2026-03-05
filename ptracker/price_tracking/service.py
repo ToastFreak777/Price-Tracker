@@ -142,22 +142,15 @@ class PriceTrackerService:
 
         result = []
         for user_item in user.tracked_items:
-            item = user_item.item
-
-            if refresh_stale and item.is_stale(max_age_hours=1):
-                try:
-                    self._update_item_price(item)
-                except Exception as e:
-                    print(f"Error refreshing item {item.id}: {e}")
-
             price_change = self.calculate_price_change(user_item.item)
 
             result.append(
                 {
-                    "item": item,
+                    "item": user_item.item,
                     "target_price": user_item.target_price,
-                    "current_price": item.current_price,
+                    "current_price": user_item.item.current_price,
                     "price_change": price_change,
+                    "notifications_enabled": user_item.notifications_enabled,
                 }
             )
 
