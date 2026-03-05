@@ -129,5 +129,5 @@ def update_all_items():
     """Endpoint to trigger manual update of all tracked items.
     In production, this would be handled by a scheduled background job.
     """
-    g.price_service.update_all_tracked_items()
+    g.price_service.check_price_change_and_notify_all()
     return jsonify({"success": True, "message": "All items updated"}), 200

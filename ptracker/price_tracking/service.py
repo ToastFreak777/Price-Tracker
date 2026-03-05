@@ -104,25 +104,30 @@ class PriceTrackerService:
 
         self._update_item_price(item)
 
-    def _check_price_change_and_notify(self, user_item: UserItem) -> float | None:
-        item = user_item.item
+    def calculate_price_change(self, item: Item) -> float:
         prev_price = (
             PriceHistory.query.filter_by(item_id=item.id).order_by(PriceHistory.timestamp.desc()).offset(1).first()
         )
         if not prev_price or not prev_price.price:
-            return None
+            return 0.0
 
-        price_change = round(((item.current_price - prev_price.price) / prev_price.price) * 100, 2)
+        return round(((item.current_price - prev_price.price) / prev_price.price) * 100, 2)
 
-        if price_change < 0 and item.current_price <= user_item.target_price:
-            print(
-                f"Notify user {user_item.user_id}: "
-                f"Price dropped for {item.name}! "
-                f"Current: {item.current_price}, "
-                f"Target: {user_item.target_price}"
-            )
+    def check_price_change_and_notify_all(self):
+        self.update_all_tracked_items()
+        user_items = UserItem.query.join(Item).all()
 
-        return price_change
+        for ui in user_items:
+            item = ui.item
+            price_change = self.calculate_price_change(item)
+
+            if price_change < 0 and item.current_price <= ui.target_price:
+                print(
+                    f"Notify user {ui.user_id}: "
+                    f"Price dropped for {item.name}! "
+                    f"Current: {item.current_price}, "
+                    f"Target: {ui.target_price}"
+                )
 
     def get_user_tracked_items(self, user_id: int, refresh_stale: bool = True):
         """Get user's tracked items with full details, optionally refreshing stale data"""
@@ -140,7 +145,7 @@ class PriceTrackerService:
                 except Exception as e:
                     print(f"Error refreshing item {item.id}: {e}")
 
-            price_change = self._check_price_change_and_notify(user_item)
+            price_change = self.calculate_price_change(user_item.item)
 
             result.append(
                 {
@@ -158,7 +163,7 @@ class PriceTrackerService:
         if not user_item:
             raise NotFound("Item not found in user's tracked list")
 
-        price_change = self._check_price_change_and_notify(user_item)
+        price_change = self.calculate_price_change(user_item.item)
 
         return {
             "item": user_item.item,
