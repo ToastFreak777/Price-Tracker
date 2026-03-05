@@ -1,15 +1,24 @@
 from flask_wtf import FlaskForm
-from wtforms import HiddenField, StringField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import HiddenField, StringField, SubmitField, DecimalField
+from wtforms.validators import DataRequired, InputRequired, NumberRange
 
 
 class TrackProductForm(FlaskForm):
     product_url = StringField("Product URL", validators=[DataRequired()])
+    target_price = DecimalField(
+        "Target Price",
+        validators=[InputRequired(), NumberRange(min=0, message="Target price must be a positive number.")],
+        places=2,
+    )
     submit = SubmitField("Start Tracking")
 
 
 class ItemDetailsForm(FlaskForm):
-    alert_price = StringField("Alert Price", validators=[DataRequired()])
+    alert_price = DecimalField(
+        "Alert Price",
+        validators=[InputRequired(), NumberRange(min=0, message="Alert price must be a positive number.")],
+        places=2,
+    )
     submit = SubmitField("Save")
 
 

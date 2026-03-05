@@ -13,9 +13,7 @@ def add_product_page():
     form = TrackProductForm()
 
     if form.validate_on_submit():
-        # TODO: add target price field to form
-        target_price = 0
-        g.price_service.track_item(form.product_url.data, current_user.id, target_price)
+        g.price_service.track_item(form.product_url.data, current_user.id, form.target_price.data)
         return redirect(url_for("main.home_page"))
 
     return render_template("product/add_product.html", title="Add Product", current_path=request.path, form=form)

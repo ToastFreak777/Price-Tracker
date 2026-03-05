@@ -71,8 +71,10 @@
   </p>
 
   {{ form.product_url.label(class="product-form__label") }}
-  {{form.product_url(class="product-form__input", placeholder="Enter product
-  URL")}} {{ form.submit(class="product-form__btn") }}
+  {{form.product_url(class="product-form__input", placeholder="Enter
+  productURL")}} {{ form.target_price.label(class="product-form__label") }}
+  {{form.target_price(class="product-form__input", placeholder="Enter target
+  price e.g., 49.99")}} {{ form.submit(class="product-form__btn") }}
 
   <a class="product-form__link product-form__back" href="/">
     <i class="fa-solid fa-arrow-left"></i>
