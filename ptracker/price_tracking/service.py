@@ -121,7 +121,12 @@ class PriceTrackerService:
             item = ui.item
             price_change = self.calculate_price_change(item)
 
-            if price_change < 0 and item.current_price <= ui.target_price:
+            if (
+                ui.user.notifications_enabled
+                and ui.notifications_enabled
+                and price_change < 0
+                and item.current_price <= ui.target_price
+            ):
                 print(
                     f"Notify user {ui.user_id}: "
                     f"Price dropped for {item.name}! "

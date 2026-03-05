@@ -10,6 +10,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(Enum("user", "demo", "admin", name="user_role"), nullable=False, default="user")
+    notifications_enabled = db.Column(db.Boolean, default=True)
 
     tracked_items = db.relationship("UserItem", backref="user", lazy=True)
 
@@ -54,6 +55,7 @@ class UserItem(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False)
     target_price = db.Column(db.Float, nullable=False)
+    notifications_enabled = db.Column(db.Boolean, default=True)
 
     item = db.relationship("Item", backref="user_items", lazy=True)
 
