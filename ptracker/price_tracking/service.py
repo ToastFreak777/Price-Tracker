@@ -187,3 +187,19 @@ class PriceTrackerService:
                 self._update_item_price(item)
             except Exception as e:
                 print(f"Error updating item {item.id}: {e}")
+
+    def update_user_notifications(self, user_id: int, enabled: bool):
+        user = db.session.get(User, user_id)
+        if not user:
+            raise NotFound(f"No user with id: {user_id}")
+
+        user.notifications_enabled = enabled
+        db.session.commit()
+
+    def update_item_notifications(self, user_id: int, item_id: int, enabled: bool):
+        user_item = db.session.query(UserItem).filter_by(user_id=user_id, item_id=item_id).first()
+        if not user_item:
+            raise NotFound("Item not found in user's tracked list")
+
+        user_item.notifications_enabled = enabled
+        db.session.commit()

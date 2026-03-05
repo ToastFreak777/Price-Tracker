@@ -131,3 +131,19 @@ def update_all_items():
     """
     g.price_service.check_price_change_and_notify_all()
     return jsonify({"success": True, "message": "All items updated"}), 200
+
+
+@api_bp.route("/user/notifications", methods=["PATCH"])
+@login_required
+def update_user_notifications():
+    data = request.get_json()
+    g.price_service.update_user_notifications(current_user.id, data.get("enabled", True))
+    return jsonify({"success": True})
+
+
+@api_bp.route("/items/<int:item_id>/notifications", methods=["PATCH"])
+@login_required
+def update_item_notifications(item_id):
+    data = request.get_json()
+    g.price_service.update_item_notifications(current_user.id, item_id, data.get("enabled", True))
+    return jsonify({"success": True})

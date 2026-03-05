@@ -114,6 +114,8 @@
         <input
           type="checkbox"
           class="alerts__input"
+          data-item-toggle
+          data-item-id="{{ product.item.id }}"
           id="slider-toggle-{{loop.index}}"
           {%
           if
@@ -136,7 +138,6 @@
         <a href="/items/{{ product.item.id }}" class="alerts__edit">
           <i class="fa-solid fa-pencil"></i>
         </a>
-        <!-- TODO delete functionality -->
         <form method="POST">
           {{ form.csrf_token }} {{ form.item_id(value=product.item.id) }}
           <button type="submit" class="alerts__delete">

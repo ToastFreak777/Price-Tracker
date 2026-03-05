@@ -71,4 +71,29 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     }, 4000);
   });
+
+  document
+    .getElementById("slider-toggle-email")
+    ?.addEventListener("change", async (e) => {
+      const enabled = e.target.checked;
+      console.log("Toggleing notifications");
+      await fetch("/api/user/notifications", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled }),
+      });
+    });
+
+  document.querySelectorAll("[data-item-toggle]").forEach((toggle) => {
+    toggle.addEventListener("change", async (e) => {
+      const itemId = e.target.dataset.itemId;
+      const enabled = e.target.checked;
+      console.log(`Toggling notifications for item ${itemId} to ${enabled}`);
+      await fetch(`/api/items/${itemId}/notifications`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled }),
+      });
+    });
+  });
 });
