@@ -46,9 +46,10 @@ def create_app(config_class=Config):
     register_error_handlers(app)
 
     # Register CLI commands
-    from ptracker.commands import seed_db, reset_db
+    from ptracker.commands import seed_db, reset_db, update_items
 
     app.cli.add_command(seed_db)
     app.cli.add_command(reset_db)
+    app.cli.add_command(update_items)
 
     return app

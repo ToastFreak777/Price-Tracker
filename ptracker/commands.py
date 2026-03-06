@@ -35,3 +35,14 @@ def reset_db():
     db.drop_all()
     db.create_all()
     click.echo("Database reset!")
+
+
+@click.command("update-items")
+@with_appcontext
+def update_items():
+    """Update items in the database"""
+    from ptracker.price_tracking.service import PriceTrackerService
+
+    price_service = PriceTrackerService()
+    price_service.update_all_tracked_items()
+    click.echo("Item prices updated!")
