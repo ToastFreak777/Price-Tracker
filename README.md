@@ -76,41 +76,55 @@ Price-Tracker/
 ### Setup
 
 1. **Clone the repository**
+
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/ToastFreak777/Price-Tracker.git
    cd Price-Tracker
    ```
 
 2. **Create a virtual environment**
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Configure environment variables**
-   
+
    Create a `.env` file in the root directory:
+
    ```env
+   FLASK_APP=ptracker
+   FLASK_ENV=development
+   FLASK_DEBUG=true
    SECRET_KEY=your-secret-key-here
    DB_URI=sqlite:///site.db
    EBAY_CLIENT_ID=your-ebay-client-id (optional)
    EBAY_CLIENT_SECRET=your-ebay-client-secret (optional)
-   PORT=5000
    ```
 
 5. **Initialize the database**
+
    ```bash
    flask db upgrade
    ```
 
 6. **Run the application**
+
    ```bash
    python run.py
+   ```
+
+   Or
+
+   ```bash
+   flask run
    ```
 
    The application will be available at `http://localhost:5000`
@@ -180,30 +194,36 @@ curl -X POST http://localhost:5000/api/login \
 ## 🗄 Database Models
 
 ### User
+
 - Stores user credentials and preferences
 - Relationships: tracked_items through UserItem
 
 ### Item
+
 - Stores product information from vendors
 - Fields: vendor, external_id, url, name, price, currency, stock status
 - Relationships: price_history, user_items
 
 ### UserItem
+
 - Junction table linking users to tracked items
 - Fields: user_id, item_id, target_price, notifications_enabled
 
 ### PriceHistory
+
 - Historical price records for items
 - Fields: item_id, price, timestamp
 
 ## 🔌 Data Sources
 
 ### Mock Datasource
+
 - Always enabled for testing
 - URLs matching `mock.com` pattern
 - Returns mock product data
 
 ### eBay Datasource
+
 - Enabled when `EBAY_CLIENT_ID` is configured
 - Fetches real product data from eBay API
 
@@ -224,32 +244,9 @@ flask seed-db      # Seed database with sample data
 flask init-db      # Initialize database tables
 ```
 
-## 🤝 Contributing
-
-This is a portfolio project. If you'd like to suggest improvements:
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a pull request
-
-## 📄 License
-
-This project is created as a portfolio demonstration.
-
-## 👤 Author
-
-Created as a portfolio project to demonstrate Python/Flask backend development skills.
-
 ## 🔮 Future Enhancements
 
-- [ ] Implement eBay datasource fetch logic
 - [ ] Add more vendor datasources (Amazon, Walmart, etc.)
-- [ ] Email/SMS notifications for price drops
-- [ ] Scheduled background jobs for automatic price updates
-- [ ] Price drop analytics and charts
-- [ ] Mobile-responsive design improvements
+- [ ] SMS notifications for price drops
 - [ ] Export price history data (CSV, JSON)
 - [ ] Search functionality for tracked items
-
