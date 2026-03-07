@@ -20,6 +20,7 @@ def add_product_page():
 
 
 @price_bp.route("/alerts", methods=["GET", "POST"])
+@login_required
 def notifications_page():
     form = DeleteItemForm()
 

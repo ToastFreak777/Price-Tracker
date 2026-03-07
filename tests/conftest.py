@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash
 
 from ptracker import create_app
 from ptracker.extensions import db
-from ptracker.models import User
+from ptracker.models import User, Item, PriceHistory
 
 
 class TestConfig:
@@ -71,3 +71,28 @@ def auth_client_demo(client):
     db.session.commit()
 
     return login_client(client, user.email, "demo123")
+
+
+@pytest.fixture
+def item_no_history(app):
+    item = Item(vendor="mock", external_id="123", url="https://mock.com/items/123", current_price=100.0)
+    db.session.add(item)
+    db.session.flush()
+
+    history = PriceHistory(item_id=item.id, price=100.0)
+    db.session.add(history)
+    db.session.commit()
+
+    return item
+
+
+@pytest.fixture
+def item_with_history(item_no_history):
+    item_no_history.current_price = 90
+    db.session.flush()
+
+    history = PriceHistory(item_id=item_no_history.id, price=item_no_history.current_price)
+    db.session.add(history)
+    db.session.commit()
+
+    return item_no_history

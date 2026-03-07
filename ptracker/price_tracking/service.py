@@ -130,12 +130,6 @@ class PriceTrackerService:
             ):
                 email_service = EmailService()
                 email_service.send_email(ui.user.email)
-                # print(
-                #     f"Notify user {ui.user_id}: "
-                #     f"Price dropped for {item.name}! "
-                #     f"Current: {item.current_price}, "
-                #     f"Target: {ui.target_price}"
-                # )
 
     def get_user_tracked_items(self, user_id: int, refresh_stale: bool = True):
         """Get user's tracked items with full details, optionally refreshing stale data"""

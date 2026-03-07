@@ -1,5 +1,4 @@
 import re
-import random
 from .base import DataSource, ProductSnapshot
 
 
@@ -27,15 +26,14 @@ class MockDataSource(DataSource):
 
     def fetch_product(self, identifier: str) -> ProductSnapshot:
         base_price = 99.99
-        variation = random.uniform(-10, 10)
 
         return ProductSnapshot(
             vendor=self.vendor_name,
             external_id=identifier,
             name=f"Mock Product {identifier}",
-            price=round(base_price + variation, 2),
+            price=base_price,
             currency="USD",
-            in_stock=random.choice([True, True, True, False]),
+            in_stock=True,
             url=f"https://mock.com/products/{identifier}",
             image_url=f"https://via.placeholder.com/300?text=Product+{identifier}",
         )
