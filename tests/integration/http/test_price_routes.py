@@ -1,6 +1,3 @@
-import pytest
-
-
 class TestAddProductPage:
     def test_add_product_page_renders_for_authenticated_user(self, auth_client):
         res = auth_client.get("/items/add")
