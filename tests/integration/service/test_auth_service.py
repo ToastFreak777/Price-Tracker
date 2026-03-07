@@ -2,18 +2,30 @@ from ptracker.auth.service import AuthService
 import pytest
 
 
-def test_register_user_returns_user_with_correct_data(app):
-    with app.app_context():
-        service = AuthService()
-        user = service.register_user("alice", "alice@test.com", "pass123")
+def test_register_success(app):
+    expected = {"username": "alice", "email": "alice@test.com"}
 
-        assert user.username == "alice"
-        assert user.email == "alice@test.com"
-        assert user.password_hash != "pass123"  # Hashed, not plaintext
-        assert user.password_hash.startswith("scrypt:")  # Check hash format
+    service = AuthService()
+    user = service.register_user(**expected, password="pass123")
+
+    assert user.username == expected["username"]
+    assert user.email == expected["email"]
+    assert user.role == "user"  # Default role
+    assert user.password_hash != "pass123"  # Hashed, not plaintext
+    assert user.password_hash.startswith("scrypt:")  # Check hash format
 
 
-def test_login_user_returns_user_with_corrct_data(auth_user):
+@pytest.mark.parametrize(
+    "username, email",
+    [("uniqueUsername", "test@example.com"), ("testuser", "unique@example.com")],
+)
+def test_register_user_fails_on_duplicate(auth_user, username, email):
+    service = AuthService()
+    with pytest.raises(ValueError, match="Username or email already exists"):
+        service.register_user(username, email, "newpass123")
+
+
+def test_login_success(auth_user):
     service = AuthService()
     user = service.login("test@example.com", "password123")
 
@@ -21,13 +33,14 @@ def test_login_user_returns_user_with_corrct_data(auth_user):
     assert user.email == auth_user.email
 
 
-def test_login_user_fails_with_wrong_password(auth_user):
+@pytest.mark.parametrize(
+    "email, password",
+    [
+        ("test@example.com", "wrongpassword123"),
+        ("wrong@example.com", "password123"),
+    ],
+)
+def test_login_user_fails(auth_user, email, password):
     service = AuthService()
     with pytest.raises(ValueError, match="Invalid credentials"):
-        service.login("test@example.com", "wrongpassword")
-
-
-def test_login_user_fails_with_wrong_email(auth_user):
-    service = AuthService()
-    with pytest.raises(ValueError, match="Invalid credentials"):
-        service.login("wrong@example.com", "password123")
+        service.login(email, password)
