@@ -23,11 +23,13 @@ def app():
         yield app
         db.session.remove()
         db.drop_all()
+        db.engine.dispose()
 
 
 @pytest.fixture
 def client(app):
-    return app.test_client()
+    with app.test_client() as client:
+        yield client
 
 
 def login_client(client, email, password):
