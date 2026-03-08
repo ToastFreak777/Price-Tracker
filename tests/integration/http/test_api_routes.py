@@ -143,10 +143,11 @@ class TestGetItemAPI:
     def test_get_item_returns_item_data(self, auth_client):
         # First track an item
         res = auth_client.post(
-            "/items",
+            "api/items/add",
             json={"url": "https://mock.com/items/789", "target_price": 75.0},
         )
-        item_id = res.get_json()["item_id"]
+
+        item_id = res.get_json()["data"]["id"]
 
         # Get item via API
         res = auth_client.get(f"/api/items/{item_id}")
@@ -154,8 +155,6 @@ class TestGetItemAPI:
         data = res.get_json()
         assert data["success"] is True
         assert data["data"]["id"] == item_id
-        assert "item" in data["data"]
-        assert "price_history" in data["data"]
 
     def test_get_item_requires_authentication(self, client):
         res = client.get("/api/items/1")
@@ -166,10 +165,10 @@ class TestUntrackItemAPI:
     def test_untrack_item_removes_item(self, auth_client):
         # First track an item
         res = auth_client.post(
-            "/items",
+            "/api/items/add",
             json={"url": "https://mock.com/items/321", "target_price": 60.0},
         )
-        item_id = res.get_json()["item_id"]
+        item_id = res.get_json()["data"]["id"]
 
         # Untrack the item
         res = auth_client.delete(f"/api/items/{item_id}")

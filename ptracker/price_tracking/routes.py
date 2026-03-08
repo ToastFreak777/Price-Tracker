@@ -28,7 +28,7 @@ def notifications_page():
         g.price_service.remove_item(current_user.id, form.item_id.data)
 
     service = PriceTrackerService()
-    products = service.get_user_tracked_items(current_user.id, refresh_stale=False)
+    products = service.get_user_tracked_items(current_user.id)
 
     return render_template(
         "product/alerts.html", title="Alerts", current_path=request.path, products=products, form=form

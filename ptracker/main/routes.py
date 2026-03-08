@@ -10,5 +10,5 @@ main_bp = Blueprint("main", __name__)
 @login_required
 def home_page():
     service = PriceTrackerService()
-    products = service.get_user_tracked_items(current_user.id, refresh_stale=False)
+    products = service.get_user_tracked_items(current_user.id)
     return render_template("main/home.html", title="Home", products=products, current_path=request.path)

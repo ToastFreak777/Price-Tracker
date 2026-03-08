@@ -6,18 +6,9 @@ from ptracker.extensions import db
 from ptracker.models import User, Item, PriceHistory
 
 
-class TestConfig:
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
-    SECRET_KEY = "test-secret-key"
-    WTF_CSRF_ENABLED = False
-    LOGIN_DISABLED = False
-    SERVER_NAME = "localhost"
-
-
 @pytest.fixture
 def app():
-    app = create_app(TestConfig)
+    app = create_app()
     with app.app_context():
         db.create_all()
         yield app

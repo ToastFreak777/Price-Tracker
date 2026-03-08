@@ -131,7 +131,7 @@ class PriceTrackerService:
                 email_service = EmailService()
                 email_service.send_email(ui.user.email)
 
-    def get_user_tracked_items(self, user_id: int, refresh_stale: bool = True):
+    def get_user_tracked_items(self, user_id: int):
         """Get user's tracked items with full details, optionally refreshing stale data"""
         user = db.session.get(User, user_id)
         if not user:

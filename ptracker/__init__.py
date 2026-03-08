@@ -1,10 +1,22 @@
+import os
+
 from flask import Flask
-from config import Config
+from config import DevelopmentConfig, TestingConfig, ProductionConfig
+from flask_smorest import Api
 
 
-def create_app(config_class=Config):
+def create_app():
+    env = os.getenv("FLASK_ENV", "development")
+    if env == "production":
+        config_class = ProductionConfig
+    elif env == "testing":
+        config_class = TestingConfig
+    else:
+        config_class = DevelopmentConfig
+
     app = Flask(__name__)
     app.config.from_object(config_class)
+    api = Api(app)
 
     # Initialize extensions
     from ptracker.extensions import db, migrate, login_manager
@@ -33,12 +45,12 @@ def create_app(config_class=Config):
     from ptracker.auth.routes import auth_bp
     from ptracker.price_tracking.routes import price_bp
     from ptracker.main.routes import main_bp
-    from ptracker.api.routes import api_bp
+    from ptracker.api import api_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(price_bp)
     app.register_blueprint(main_bp)
-    app.register_blueprint(api_bp)
+    api.register_blueprint(api_bp)
 
     # Register error handlers
     from ptracker.errors import register_error_handlers
@@ -51,5 +63,9 @@ def create_app(config_class=Config):
     app.cli.add_command(seed_db)
     app.cli.add_command(reset_db)
     app.cli.add_command(update_items)
+
+    if app.config.get("TESTING"):
+        with app.app_context():
+            db.create_all()
 
     return app

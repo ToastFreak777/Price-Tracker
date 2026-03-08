@@ -209,3 +209,6 @@ __marimo__/
 
 context.txt
 TODO.md
+logs/
+run_price_tracker.sh
+result.txt
