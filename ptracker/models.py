@@ -22,12 +22,12 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     vendor = db.Column(db.String(100), nullable=False)
     external_id = db.Column(db.String(100), nullable=False)
-    url = db.Column(db.String(200), nullable=False)
+    url = db.Column(db.String(500), nullable=False)
 
-    name = db.Column(db.String(255), nullable=True)
+    name = db.Column(db.String(300), nullable=True)
     currency = db.Column(db.String(10), nullable=True)
     current_price = db.Column(db.Float, nullable=True)
-    image_url = db.Column(db.String(255), nullable=True)
+    image_url = db.Column(db.String(500), nullable=True)
     in_stock = db.Column(db.Boolean, nullable=True)
     last_fetched = db.Column(db.DateTime, nullable=True)
 
