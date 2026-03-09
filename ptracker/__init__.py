@@ -5,7 +5,7 @@ from config import DevelopmentConfig, TestingConfig, ProductionConfig
 from flask_smorest import Api
 
 
-def create_app():
+def create_app(override_config=None):
     env = os.getenv("FLASK_ENV", "development")
     if env == "production":
         config_class = ProductionConfig
@@ -15,7 +15,7 @@ def create_app():
         config_class = DevelopmentConfig
 
     app = Flask(__name__)
-    app.config.from_object(config_class)
+    app.config.from_object(override_config or config_class)
     api = Api(app)
 
     # Initialize extensions

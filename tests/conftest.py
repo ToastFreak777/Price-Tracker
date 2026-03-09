@@ -5,10 +5,12 @@ from ptracker import create_app
 from ptracker.extensions import db
 from ptracker.models import User, Item, PriceHistory
 
+from config import TestingConfig
+
 
 @pytest.fixture
 def app():
-    app = create_app()
+    app = create_app(TestingConfig)
     with app.app_context():
         db.create_all()
         yield app

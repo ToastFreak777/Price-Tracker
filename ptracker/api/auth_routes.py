@@ -1,6 +1,7 @@
 from flask import g
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.exceptions import Conflict, Unauthorized, Forbidden
+from flask_smorest import abort
 
 from .schemas import (
     RegistrationRequestSchema,
@@ -18,7 +19,7 @@ from . import api_bp
 def register(data):
 
     if current_user.is_authenticated:
-        raise Conflict("User is already registered")
+        abort(409, message="User is already registered")
 
     user = g.auth_service.register_user(data["username"], data["email"], data["password"])
     login_user(user, remember=False)
