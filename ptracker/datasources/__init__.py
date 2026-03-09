@@ -44,6 +44,16 @@ def init_datasources(app):
 
     if ebay_key and ebay_secret:
         DataSourceFactory.register("ebay", EbayDataSource(api_key=ebay_key, api_secret=ebay_secret))
+    else:
+        missing = []
+        if not ebay_key:
+            missing.append("EBAY_CLIENT_ID")
+        if not ebay_secret:
+            missing.append("EBAY_CLIENT_SECRET")
+        app.logger.warning(
+            "Ebay data source disabled. Missing credentials: %s",
+            ", ".join(missing) if missing else "unknown",
+        )
 
 
 __all__ = [

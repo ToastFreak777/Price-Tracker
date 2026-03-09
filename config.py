@@ -1,14 +1,20 @@
+import os
+
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
 
 
+def get_env_value(key: str, default: str = "") -> str:
+    return os.getenv(key) or config.get(key) or default
+
+
 class BaseConfig:
-    SECRET_KEY = config.get("SECRET_KEY") or "you-will-never-guess"
+    SECRET_KEY = get_env_value("SECRET_KEY", "you-will-never-guess")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    EBAY_CLIENT_ID = config.get("EBAY_CLIENT_ID") or ""
-    EBAY_CLIENT_SECRET = config.get("EBAY_CLIENT_SECRET") or ""
+    EBAY_CLIENT_ID = get_env_value("EBAY_CLIENT_ID")
+    EBAY_CLIENT_SECRET = get_env_value("EBAY_CLIENT_SECRET")
 
     API_TITLE = "Price Tracker API"
     API_VERSION = "v1"
@@ -20,7 +26,7 @@ class BaseConfig:
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = config.get("DB_URI") or "sqlite:///site.db"
+    SQLALCHEMY_DATABASE_URI = get_env_value("DB_URI", "sqlite:///site.db")
 
 
 class TestingConfig(BaseConfig):
@@ -34,4 +40,4 @@ class TestingConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = config.get("DB_URI") or "sqlite:///site.db"
+    SQLALCHEMY_DATABASE_URI = get_env_value("DB_URI", "sqlite:///site.db")
