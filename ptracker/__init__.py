@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from config import DevelopmentConfig, TestingConfig, ProductionConfig
 from flask_smorest import Api
+from sqlalchemy import inspect
 
 
 def create_app(override_config=None):
@@ -64,8 +65,12 @@ def create_app(override_config=None):
     app.cli.add_command(reset_db)
     app.cli.add_command(update_items)
 
-    if app.config.get("TESTING"):
-        with app.app_context():
+    with app.app_context():
+        if app.config.get("TESTING"):
             db.create_all()
+        else:
+            inspector = inspect(db.engine)
+            if "user" not in inspector.get_table_names():
+                db.create_all()
 
     return app
