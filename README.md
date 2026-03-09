@@ -168,6 +168,8 @@ Try the application without creating an account by clicking the "Demo" button on
 
 ### API Endpoints
 
+- **The project uses OpenAPI + flask_smorest to serve interactive api documentation. Visit /api/docs to view**
+
 #### Authentication
 
 - `POST /api/register` - Register a new user
