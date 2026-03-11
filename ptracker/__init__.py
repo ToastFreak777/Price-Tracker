@@ -8,6 +8,7 @@ from sqlalchemy import inspect
 
 def create_app(override_config=None):
     env = os.getenv("FLASK_ENV", "development")
+    print(env)
     if env == "production":
         config_class = ProductionConfig
     elif env == "testing":
