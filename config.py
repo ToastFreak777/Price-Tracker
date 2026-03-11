@@ -1,5 +1,7 @@
 import os
 
+from sqlalchemy.pool import NullPool
+
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
@@ -11,6 +13,7 @@ def get_env_value(key: str, default: str = "") -> str:
 
 class BaseConfig:
     SECRET_KEY = get_env_value("SECRET_KEY", "you-will-never-guess")
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     EBAY_CLIENT_ID = get_env_value("EBAY_CLIENT_ID")
@@ -26,7 +29,7 @@ class BaseConfig:
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = get_env_value("DB_URI", "sqlite:///site.db")
+    SQLALCHEMY_DATABASE_URI = "sqlite:///site.db"
 
 
 class TestingConfig(BaseConfig):
@@ -40,4 +43,5 @@ class TestingConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = get_env_value("DB_URI", "sqlite:///site.db")
+    SQLALCHEMY_DATABASE_URI = get_env_value("DB_URI")
+    SQLALCHEMY_ENGINE_OPTIONS = {"poolclass": NullPool}
