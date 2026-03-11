@@ -1,4 +1,4 @@
-from flask import request, g
+from flask import request, g, current_app
 from flask_login import current_user, login_required
 
 from .schemas import (
@@ -54,7 +54,9 @@ def update_all_items():
     """Endpoint to trigger manual update of all tracked items.
     In production, this would be handled by a scheduled background job.
     """
+    current_app.logger.info("Updating all items...")
     g.price_service.check_price_change_and_notify_all()
+    current_app.logger.info("All items updated!")
     return {"success": True, "message": "All items updated"}
 
 
