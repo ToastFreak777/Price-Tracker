@@ -8,9 +8,9 @@
         <img src="{{item.image_url}}" alt="product image" class="item__image" />
       </a>
       <form method="POST">
-        {{ delete_form.csrf_token }}
-        {{ delete_form.item_id(value=item.id) }}
-        {{ delete_form.delete_submit(class="item__details__button item__details__button-untrack") }}
+        {{ delete_form.csrf_token }} {{ delete_form.item_id(value=item.id) }} {{
+        delete_form.delete_submit(class="item__details__button
+        item__details__button-untrack") }}
       </form>
       {{form.alert_price.label(class="item__details__label")}}
       <form method="POST" class="item__details__controls">
@@ -25,7 +25,8 @@
       <p class="item__price-history-graph__current-price">
         {{ item.current_price }}
       </p>
-      {% if price_change is not none %} {% if price_change > 0 %}
+      {% if price_change is not none and item.in_stock %} {% if price_change > 0
+      %}
       <span class="item__price-history-graph__price-change-negative">
         +{{ price_change }}%</span
       >
@@ -33,7 +34,11 @@
       <span class="item__price-history-graph__price-change-positive">
         {{ price_change }}%</span
       >
-      {% endif %} {% endif %}
+      {% endif %} {% endif %} {% if not item.in_stock %}
+      <span class="item__price-history-graph__price-change-warning">
+        Out of Stock</span
+      >
+      {% endif %}
 
       <div class="item__price-history-graph__image">
         <canvas id="priceChart"></canvas>

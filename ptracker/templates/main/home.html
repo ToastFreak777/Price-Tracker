@@ -91,7 +91,8 @@
         <h3>{{ product.item.name }}</h3>
         {% endif %}
         <p>{{ product.item.currency }} {{ product.current_price }}</p>
-        {% if product.price_change %} {% if product.price_change > 0 %}
+        {% if product.price_change and product.in_stock %} {% if
+        product.price_change > 0 %}
         <span class="home__card__badge home__card__badge-danger">
           +{{ product.price_change }}%</span
         >
@@ -99,7 +100,11 @@
         <span class="home__card__badge home__card__badge-success">
           {{ product.price_change }}%</span
         >
-        {% endif %} {% endif %}
+        {% endif %} {% endif %} {% if not product.item.in_stock %}
+        <span class="home__card__badge home__card__badge-warning">
+          Out of Stock
+        </span>
+        {% endif %}
       </div>
       <div class="home__card-image">
         <img src="{{ product.item.image_url }}" alt="product image" />

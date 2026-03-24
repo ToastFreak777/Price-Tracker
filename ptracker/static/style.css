@@ -406,6 +406,9 @@ a {
 .home__card__badge-success {
   background-color: green;
 }
+.home__card__badge-warning {
+  background-color: hsl(39, 100%, 40%);
+}
 
 .home__card-image {
   width: 120px;
@@ -542,10 +545,12 @@ a {
 .item__price-history-graph__current-price {
   font-size: 1.5em;
   font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 .item__price-history-graph__price-change-positive,
-.item__price-history-graph__price-change-negative {
+.item__price-history-graph__price-change-negative,
+.item__price-history-graph__price-change-warning {
   width: fit-content;
   color: white;
   padding: 0.5rem 1rem;
@@ -558,6 +563,10 @@ a {
 
 .item__price-history-graph__price-change-negative {
   background-color: red;
+}
+
+.item__price-history-graph__price-change-warning {
+  background-color: hsl(39, 100%, 40%);
 }
 
 .item__price-history-graph__image {

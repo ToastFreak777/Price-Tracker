@@ -87,8 +87,10 @@ class EbayDataSource(DataSource):
             raise DataSourceError(f"eBay API error: {response.text}")
 
         data = response.json()
-        avail = data.get("availability", [{}])[0]
-        in_stock = avail.get("estimatedAvailabilityStatus") == "IN_STOCK"
+        avail = data.get("estimatedAvailabilities", [{}])[0]
+        in_stock = (
+            avail.get("estimatedAvailabilityStatus") == "IN_STOCK" and avail.get("estimatedRemainingQuantity", 0) > 0
+        )
 
         return ProductSnapshot(
             vendor=self.vendor_name,
