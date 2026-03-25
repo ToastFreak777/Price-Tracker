@@ -91,6 +91,6 @@ jobs:
           EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
           EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DB_URI: ${{ secrets.DB_URI }}
         run: |
           flask update-items
