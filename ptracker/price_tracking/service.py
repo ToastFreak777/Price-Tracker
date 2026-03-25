@@ -78,7 +78,7 @@ class PriceTrackerService:
         db.session.delete(user_item)
         db.session.commit()
 
-    def _update_item_price(self, item: Item):
+    def _update_item_price(self, item: Item, commit: bool = True):
         """Core logic for fetching and updating item price once per day.
 
         Fetches if stale (24+ hours since last fetch) and records unrecorded price changes.
@@ -95,7 +95,9 @@ class PriceTrackerService:
             item.last_fetched = datetime.now(timezone.utc)
 
             db.session.add(PriceHistory(item_id=item.id, price=snapshot.price))
-            db.session.commit()
+
+            if commit:
+                db.session.commit()
 
     def check_price_and_update(self, item_id: int):
         """Public method to check and update price by item_id."""
@@ -117,6 +119,7 @@ class PriceTrackerService:
     def check_price_change_and_notify_all(self):
         self.update_all_tracked_items()
         user_items = UserItem.query.join(Item).all()
+        email_service = EmailService()
 
         for ui in user_items:
             item = ui.item
@@ -128,7 +131,6 @@ class PriceTrackerService:
                 and price_change < 0
                 and item.current_price <= ui.target_price
             ):
-                email_service = EmailService()
                 email_service.send_email(ui.user.email)
 
     def get_user_tracked_items(self, user_id: int):
@@ -178,12 +180,17 @@ class PriceTrackerService:
         """Utility method to update all tracked items.
         In production, this would be run as a scheduled background job.
         """
+        # Can add performance improvement using joinedload
         items = db.session.query(Item).join(UserItem).distinct().all()
+
         for item in items:
             try:
-                self._update_item_price(item)
+                self._update_item_price(item, commit=False)
             except Exception as e:
                 print(f"Error updating item {item.id}: {e}")
+                db.session.rollback()
+
+        db.session.commit()
 
     def update_user_notifications(self, user_id: int, enabled: bool):
         user = db.session.get(User, user_id)

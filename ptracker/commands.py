@@ -44,5 +44,5 @@ def update_items():
     from ptracker.price_tracking.service import PriceTrackerService
 
     price_service = PriceTrackerService()
-    price_service.update_all_tracked_items()
-    click.echo("Item prices updated!")
+    price_service.check_price_change_and_notify_all()
+    click.echo("Items updated + notifications processed!")
