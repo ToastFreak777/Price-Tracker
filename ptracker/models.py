@@ -36,6 +36,19 @@ class Item(db.Model):
     __table_args__ = (UniqueConstraint("vendor", "external_id", name="unique_vendor_external_id"),)
 
     def is_stale(self, max_age_hours: int = 24) -> bool:
+        """Returns True if the item is stale and should be updated
+
+        Stale if:
+            - Never fetched before
+            - Last fetch was more than `max_age_hours` ago
+            - Last fetched was on a previous calendar day (UTC)
+
+        Args:
+            max_age_hours (int, optional): Expiration time of last fetched data. Defaults to 24.
+
+        Returns:
+            bool: _description_
+        """
         if not self.last_fetched:
             return True
 
@@ -43,8 +56,13 @@ class Item(db.Model):
         last_fetched_utc = (
             self.last_fetched.replace(tzinfo=timezone.utc) if self.last_fetched.tzinfo is None else self.last_fetched
         )
-        age_seconds = (datetime.now(timezone.utc) - last_fetched_utc).total_seconds()
-        return age_seconds > max_age_hours * 3600
+        now_utc = datetime.now(timezone.utc)
+        age_seconds = (now_utc - last_fetched_utc).total_seconds()
+
+        if age_seconds > max_age_hours * 3600 or last_fetched_utc.date() < now_utc.date():
+            return True
+
+        return False
 
     def __repr__(self):
         return f"<Item id={self.id} vendor={self.vendor}, external_id={self.external_id}>"
