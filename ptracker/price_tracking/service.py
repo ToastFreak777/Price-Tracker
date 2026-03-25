@@ -118,19 +118,29 @@ class PriceTrackerService:
 
     def check_price_change_and_notify_all(self):
         self.update_all_tracked_items()
+        # Can add performance improvement using joinedload
         user_items = UserItem.query.join(Item).all()
         email_service = EmailService()
 
         for ui in user_items:
+            user = ui.user
             item = ui.item
-            price_change = self.calculate_price_change(item)
 
-            if (
-                ui.user.notifications_enabled
-                and ui.notifications_enabled
-                and price_change < 0
-                and item.current_price <= ui.target_price
-            ):
+            # Skip if notifications are globally disabled or just for this item
+            if not (user.notifications_enabled and ui.notifications_enabled):
+                continue
+
+            prev_snapshot = (
+                PriceHistory.query.filter_by(item_id=item.id).order_by(PriceHistory.timestamp.desc()).offset(1).first()
+            )
+
+            prev_price = prev_snapshot.price if prev_snapshot else None
+
+            # Current price must exist
+            if item.current_price is None:
+                continue
+
+            if prev_price is not None and prev_price > ui.target_price and item.current_price <= ui.target_price:
                 email_service.send_email(ui.user.email)
 
     def get_user_tracked_items(self, user_id: int):
