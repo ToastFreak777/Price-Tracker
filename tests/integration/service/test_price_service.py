@@ -148,16 +148,25 @@ def test_check_price_change_and_notify_all_sends_email(app, auth_user, mocker):
     service = PriceTrackerService()
 
     mocker.patch.object(service, "update_all_tracked_items")
-    # Simulate price drop
-    mocker.patch.object(service, "calculate_price_change", return_value=-5.0)
 
     send_email_mock = mocker.patch("ptracker.price_tracking.service.EmailService.send_email")
 
+    # Create item and add to DB
     item = Item(vendor="mock", external_id="123", url="https://mock.com/items/123", current_price=49.99)
     db.session.add(item)
     db.session.flush()
+
     user_item = UserItem(user_id=auth_user.id, item_id=item.id, target_price=50.0)
     db.session.add(user_item)
+    db.session.flush()
+
+    # Simulate price drop by adding prev price above target
+    prev_history = PriceHistory(item_id=item.id, price=55.0)
+    db.session.add(prev_history)
+    db.session.flush()
+
+    latest_history = PriceHistory(item_id=item.id, price=item.current_price)
+    db.session.add(latest_history)
     db.session.commit()
 
     service.check_price_change_and_notify_all()
