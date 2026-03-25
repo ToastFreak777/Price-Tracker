@@ -89,7 +89,7 @@ def get_item(item_id):
         item=item,
         target_price=target_price,
         price_change=price_change,
-        price_history=serialized_history,
+        price_history=serialized_history[::-1][:5],
         form=form,
         delete_form=delete_form,
     )
